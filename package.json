@@ -1,0 +1,24 @@
+{
+  "name": "502-jujutsu-web",
+  "version": "1.0.0",
+  "description": "Backend API for 502 Jujutsu martial arts academy",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "setup-db": "node setup-db.js",
+    "create-admin": "node create-admin.js"
+  },
+  "keywords": [],
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.18.0"
+  }
+}
