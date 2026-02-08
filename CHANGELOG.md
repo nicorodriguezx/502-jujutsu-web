@@ -2,8 +2,73 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.2.0] - 2026-02-08
+
+### 🚀 **Major Feature Release - Public Website Launch**
+
+Complete implementation of the public-facing website alongside the existing admin panel, featuring a professional landing page, comprehensive content management, and full Spanish localization for Guatemala City.
+
+### ✨ **Added**
+
+#### **🌐 Public Website Infrastructure**
+- **Complete Public Site** - New React application serving the landing page at root URL (`/`)
+- **Public Layout Component** - Fixed navigation header with mobile menu and footer
+- **Public Home Page** - Comprehensive landing page with hero, programs, schedule, merchandise, testimonials, and contact sections
+- **Public API Routes** - New `/api/public/*` endpoints for unauthenticated content access
+- **Route Architecture** - Separated public routes from admin routes with proper middleware
+
+#### **🏠 Public Content Sections**
+- **Hero Section** - Professional hero with academy branding, call-to-action buttons, and contact info bar
+- **Programs Showcase** - Interactive display of all 6 martial arts programs with icons and descriptions
+- **Class Schedule** - Accordion-style weekly schedule with program-specific class details
+- **Merchandise Catalog** - Product showcase with in-person purchase call-to-action
+- **Testimonials Gallery** - Student success stories with featured content highlighting
+- **Contact & Location** - Complete contact information with WhatsApp integration and Google Maps embed
+
+#### **🇪🇸 Spanish Language & Cultural Adaptation**
+- **Complete Localization** - All content translated to Spanish with Guatemala focus
+- **Cultural Terms** - Proper Spanish terminology ("niños", "jóvenes", "mujeres", "adultos", "profesionales")
+- **Local Contact Info** - Guatemala City address and local business phone number (+502 3746 6617)
+- **WhatsApp Integration** - Primary communication channel with pre-configured messages
+- **Instagram Integration** - Social media presence (@502jujutsu) with proper URLs
+
+#### **🔧 Technical Enhancements**
+- **Modern UI Framework** - Mobile-first responsive design with Tailwind CSS
+- **Interactive Components** - Schedule accordion, smooth scrolling navigation, mobile menu
+- **Content Management** - All public content editable through existing admin panel
+- **SEO Optimization** - Proper meta tags, titles, and structured content
+- **Performance** - Optimized React components with efficient state management
+
+#### **📊 Database Schema Extensions**
+- **New Tables**:
+  - `merchandise` - Product catalog for in-person sales (kimonos, equipment, apparel)
+  - `testimonials` - Student success stories with featured content support
+- **New Program** - "First Steps" program for ages 2-5 (discipline and coordination through play)
+- **Updated Programs** - Little Champs age range corrected (5-9 instead of 3-10)
+- **Content Localization** - All program target audiences translated to Spanish
+- **Branding Updates** - "Valente Brothers" → "Hermanos Valente" methodology throughout
+
+#### **🗓️ Class Schedule Implementation**
+- **Complete Timetable** - 25+ class entries covering morning, afternoon, and evening sessions
+- **Program Diversity** - Classes for all age groups and skill levels
+- **Flexible Scheduling** - Morning sessions (6:00-13:00), afternoon kids classes (16:15-17:50), evening adult classes (18:00-20:30)
+- **Specialized Training** - Fighting foundations, sparring, striking, and advanced techniques
+
+### 🔄 **Changed**
+- **Application Structure** - Single React app serving both public site and admin panel
+- **Routing System** - Public routes (`/`) separated from admin routes (`/admin/*`)
+- **Navigation Flow** - Admin login redirects to `/admin`, public navigation updated
+- **Content Architecture** - All site content now supports public display
+- **Typography** - Modern font stack with improved readability
+
+### 📝 **Migration & Setup Notes**
+- **Database Migration** - Run `database/migration-001.sql` to add new tables and update existing data
+- **Environment Setup** - No additional environment variables required
+- **Content Population** - New content sections will be populated via seed data or admin panel
+- **URL Structure** - Public website at root URL (`/`), admin panel at `/admin`
+- **Backward Compatibility** - All existing admin panel functionality preserved
 
 ## [0.1.0] - 2026-02-07
 

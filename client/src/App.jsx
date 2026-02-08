@@ -1,8 +1,18 @@
 // ---------------------------------------------------------------------------
-// App: routes + auth guard
+// App: routes for public site + admin panel
+//
+// /          -> Public landing page
+// /admin     -> Admin panel (requires login)
+// /login     -> Admin login
 // ---------------------------------------------------------------------------
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./AuthContext";
+
+// Public
+import PublicLayout from "./PublicLayout";
+import HomePage from "./pages/public/HomePage";
+
+// Admin
 import Layout from "./Layout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -29,11 +39,20 @@ function AppRoutes() {
 
   return (
     <Routes>
+      {/* ---- Public site ---- */}
+      <Route element={<PublicLayout />}>
+        <Route index element={<HomePage />} />
+      </Route>
+
+      {/* ---- Admin login ---- */}
       <Route
         path="/login"
-        element={isLoggedIn ? <Navigate to="/" replace /> : <Login />}
+        element={isLoggedIn ? <Navigate to="/admin" replace /> : <Login />}
       />
+
+      {/* ---- Admin panel ---- */}
       <Route
+        path="/admin"
         element={
           <ProtectedRoute>
             <Layout />

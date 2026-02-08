@@ -6,18 +6,20 @@ A modern, responsive website for 502 Jujutsu, a martial arts academy in Guatemal
 
 This project consists of:
 - **Backend API** (Node.js/Express/PostgreSQL) - Content management and data storage
+- **Public Website** (React/Vite/Tailwind) - Professional landing page for visitors
 - **Admin Panel** (React/Vite/Tailwind) - Complete content management interface
-- **Public Landing Page** (planned) - User-facing website with programs, testimonials, and merchandise
 
 ### Current Features
+- **Professional Public Website** - Complete landing page with hero, programs, schedule, merchandise, testimonials, and contact sections
 - **6 Martial Arts Programs** (First Steps through Law Enforcement training)
-- **Complete Content Management** for all site sections
-- **Merchandise Catalog** for in-person sales
-- **Student Testimonials** with featured stories
-- **Photo Gallery** with multiple categories
-- **Class Schedule** management
-- **Lead Management** for inquiries and WhatsApp contacts
-- **Multi-language Support** (Spanish/English)
+- **Complete Content Management** - All public and admin content managed through web interface
+- **Merchandise Catalog** - Product showcase for in-person sales (kimonos, equipment, apparel)
+- **Student Testimonials** - Success stories with featured content highlighting
+- **Interactive Class Schedule** - Accordion-style weekly timetable with 25+ class entries
+- **Lead Management** - Inquiry tracking and WhatsApp integration
+- **Full Spanish Localization** - Guatemala City focus with proper cultural terminology
+- **Photo Gallery** - Multi-category image management
+- **Social Media Integration** - Instagram and WhatsApp connectivity
 
 ## 🛠 Tech Stack
 
@@ -81,24 +83,25 @@ This project consists of:
    cd client && npm run dev
    ```
 
-5. **Access the admin panel:**
-   - Open http://localhost:5173
-   - Create your first admin user via direct API call or database insert
-   - Log in to manage content
+5. **Access the applications:**
+   - **Public Website**: Open http://localhost:5173 (professional landing page for visitors)
+   - **Admin Panel**: Navigate to http://localhost:5173/admin (content management interface)
+   - Create your first admin user via API call or database insert
+   - Log in to the admin panel to manage all website content
 
 ## 📊 Database Schema
 
 ### Core Tables
-- **programs** - Class offerings (First Steps, Little Champs, Juniors, Mujeres, Adultos, Seguridad)
-- **schedule_entries** - Weekly class timetable
+- **programs** - Class offerings (First Steps ages 2-5, Little Champs ages 5-9, Juniors ages 11-17, Mujeres, Adultos, Seguridad)
+- **schedule_entries** - Weekly class timetable with 25+ scheduled classes
 - **instructors** - Staff profiles with photos and bios
 - **gallery_images** - Training photos, facilities, events
 - **announcements** - News and academy updates
-- **merchandise** - Academy merchandise for in-person sales
-- **testimonials** - Student success stories and achievements
-- **site_content** - Editable text blocks (hero, about, philosophy, merchandise, testimonials)
-- **contact_info** - Contact details and social media links
-- **inquiries** - Contact form submissions and WhatsApp tracking
+- **merchandise** - Academy merchandise catalog for in-person sales
+- **testimonials** - Student success stories with featured content support
+- **site_content** - Editable text blocks for all public website sections
+- **contact_info** - Contact details, WhatsApp, Instagram, and address
+- **inquiries** - Contact form submissions and lead tracking
 - **admin_users** - Admin panel users with bcrypt-hashed passwords
 
 ## 🔧 Development
@@ -153,15 +156,28 @@ psql -d jujutsu_502 -f database/migration-001.sql  # Run migrations
 - Environment variables for configuration
 
 ### Frontend
-- Static build served from CDN
-- API calls proxy to backend
-- Image storage via Cloudflare R2
+- Single React application serving both public website and admin panel
+- **Public Website**: Root URL (`/`) - Professional landing page for visitors
+- **Admin Panel**: `/admin` route - Complete content management interface
+- API calls proxy to backend with proper authentication handling
+- Image storage via Cloudflare R2 (planned)
+- Mobile-first responsive design with modern UI components
 
 ## 📝 API Reference
 
-### Public Endpoints
-- `POST /api/auth/login` - Admin authentication
+### Public Endpoints (No Authentication Required)
 - `GET /api/health` - Health check
+- `GET /api/public/site-content` - All editable site content as key-value pairs
+- `GET /api/public/contact-info` - Contact details and social media links
+- `GET /api/public/programs` - Active martial arts programs with descriptions
+- `GET /api/public/schedule` - Weekly class schedule with program associations
+- `GET /api/public/instructors` - Active instructor profiles
+- `GET /api/public/gallery[?category=]` - Photo gallery with optional category filter
+- `GET /api/public/announcements` - Published news and announcements
+- `GET /api/public/merchandise` - Available merchandise catalog
+- `GET /api/public/testimonials` - Active student testimonials
+- `POST /api/public/inquiries` - Submit contact form inquiries
+- `POST /api/auth/login` - Admin authentication
 
 ### Protected Endpoints (require JWT)
 - `GET|POST|PUT|DELETE /api/programs` - Program management
@@ -187,6 +203,7 @@ psql -d jujutsu_502 -f database/migration-001.sql  # Run migrations
 
 ### Admin Panel
 - Complete CRUD interface for all content types
+- Content management for both public website and admin panel
 - Dashboard with resource counts
 - Form validation and error handling
 - Real-time content management
@@ -210,12 +227,15 @@ When updating from previous versions:
    psql -d jujutsu_502 -f database/migration-001.sql
    ```
 
-2. **Recent changes include:**
-   - Added merchandise and testimonials tables
-   - New "First Steps" program (ages 2-5)
-   - Updated Little Champs age range (5-9)
-   - Updated branding to "Hermanos Valente"
-   - New site content sections for merchandise and testimonials
+2. **Migration 001 includes:**
+   - Added `merchandise` table for product catalog management
+   - Added `testimonials` table for student success stories
+   - New "First Steps" program (ages 2-5) with display order adjustments
+   - Updated Little Champs age range from 3-10 to 5-9
+   - Updated branding from "Valente Brothers" to "Hermanos Valente"
+   - Translated all program target audiences to Spanish
+   - Added comprehensive site content keys for public website sections
+   - Populated complete weekly class schedule with 25+ entries
 
 ## 🤝 Contributing
 

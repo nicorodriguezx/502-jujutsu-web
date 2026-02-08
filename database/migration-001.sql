@@ -59,7 +59,7 @@ VALUES (
     'Introduce a los niños al movimiento y la disciplina de forma segura, a través del juego y ejercicios guiados. Desarrolla coordinación básica, equilibrio y conciencia corporal, fomentando el respeto, la confianza y la socialización temprana.',
     2,
     5,
-    'children',
+    'niños',
     1
 );
 
@@ -93,9 +93,70 @@ UPDATE site_content
  WHERE section_key = 'methodology';
 
 -- ---------------------------------------------------------------------------
--- 6. Add new site_content keys for new sections
+-- 6. Update program target_audience to Spanish
+-- ---------------------------------------------------------------------------
+UPDATE programs SET target_audience = CASE
+    WHEN target_audience = 'children' THEN 'niños'
+    WHEN target_audience = 'teens' THEN 'jóvenes'
+    WHEN target_audience = 'women' THEN 'mujeres'
+    WHEN target_audience = 'adults' THEN 'adultos'
+    WHEN target_audience = 'professionals' THEN 'profesionales'
+    ELSE target_audience
+END;
+
+-- ---------------------------------------------------------------------------
+-- 7. Add new site_content keys for new sections
 -- ---------------------------------------------------------------------------
 INSERT INTO site_content (section_key, content_text) VALUES
+('programas_headline',      'Entrenamiento para Todas las Edades'),
+('programas_description',   'Desde niños hasta adultos, ofrecemos programas especializados que siguen la metodología Hermanos Valente basada en Helio Gracie Jūjutsu.'),
+
+('schedule_headline',       'Horarios de Clases'),
+('schedule_description',    'Nuestro horario semanal está diseñado para adaptarse a diferentes edades y niveles. Todas las clases siguen un progreso estructurado.'),
+('schedule_cta',            'Contactar por WhatsApp'),
+
 ('merchandise_headline',    'Mercancía'),
 ('merchandise_note',        'Todos los artículos están disponibles para compra directamente en la academia.'),
 ('testimonials_headline',   'Testimonios');
+
+-- ---------------------------------------------------------------------------
+-- 8. Add initial schedule entries
+-- ---------------------------------------------------------------------------
+INSERT INTO schedule_entries (program_id, day_of_week, start_time, end_time, description, is_active) VALUES
+-- Early Morning / Morning classes
+((SELECT id FROM programs WHERE slug = 'adultos'), 3, '06:00', '07:00', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 5, '06:00', '07:00', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'first-steps'), 6, '08:15', '09:00', 'First Steps - Niños 2-5 años', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 6, '09:00', '10:00', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'mujeres'), 2, '10:00', '11:00', 'Warriors - Mujeres', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 6, '10:00', '11:00', 'Sparring Kimono - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 2, '11:30', '12:15', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 4, '11:30', '12:15', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 2, '12:15', '13:00', 'Sparring Kimono - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 3, '12:15', '13:00', 'Drills / Sparring - Adultos', TRUE),
+
+-- Afternoon / Kids & Juniors
+((SELECT id FROM programs WHERE slug = 'little-champs'), 1, '16:15', '17:00', 'Little Champs - Niños 5-9 años', TRUE),
+((SELECT id FROM programs WHERE slug = 'little-champs'), 2, '16:15', '17:00', 'Little Warriors - Niños avanzados', TRUE),
+((SELECT id FROM programs WHERE slug = 'little-champs'), 3, '16:15', '17:00', 'Little Champs - Niños 5-9 años', TRUE),
+((SELECT id FROM programs WHERE slug = 'little-champs'), 4, '16:15', '17:00', 'Little Champs - Niños 5-9 años', TRUE),
+((SELECT id FROM programs WHERE slug = 'juniors'), 1, '17:00', '17:50', 'Juniors - Jóvenes 11-17 años', TRUE),
+((SELECT id FROM programs WHERE slug = 'juniors'), 2, '17:00', '17:50', 'Junior Warriors - Jóvenes avanzados', TRUE),
+((SELECT id FROM programs WHERE slug = 'juniors'), 3, '17:00', '17:50', 'Juniors - Jóvenes 11-17 años', TRUE),
+((SELECT id FROM programs WHERE slug = 'juniors'), 4, '17:00', '17:50', 'Juniors - Jóvenes 11-17 años', TRUE),
+
+-- Evening classes
+((SELECT id FROM programs WHERE slug = 'adultos'), 1, '18:00', '19:00', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 2, '18:00', '19:00', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 3, '18:00', '19:00', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 4, '18:00', '19:00', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 5, '18:00', '19:00', 'Fighting Foundations - Adultos', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 1, '19:00', '20:00', 'Fighting Mastery - Adultos avanzados', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 2, '19:00', '20:00', 'Fighting Mastery - Adultos avanzados', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 3, '19:00', '20:00', 'Fighting Mastery - Adultos avanzados', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 5, '19:00', '20:00', 'No Kimono - Entrenamiento sin judogi', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 1, '20:00', '20:30', 'Striking - Técnicas de golpeo', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 2, '20:00', '20:30', 'Sparring Kimono - Combate con judogi', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 3, '20:00', '20:30', 'Sparring Kimono - Combate con judogi', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 4, '20:00', '20:30', 'Sparring No Kimono - Combate sin judogi', TRUE),
+((SELECT id FROM programs WHERE slug = 'adultos'), 5, '20:00', '20:30', 'Sparring No Kimono - Combate sin judogi', TRUE);

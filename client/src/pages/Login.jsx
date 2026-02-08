@@ -19,7 +19,7 @@ export default function Login() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate("/", { replace: true });
+      navigate("/admin", { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {

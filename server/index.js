@@ -3,11 +3,13 @@
 // ---------------------------------------------------------------------------
 require("dotenv").config();
 
+const path = require("path");
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 
 const requireAuth = require("./middleware/auth");
+const publicRouter = require("./routes/public");
 const authRouter = require("./routes/auth");
 const programsRouter = require("./routes/programs");
 const scheduleEntriesRouter = require("./routes/scheduleEntries");
@@ -33,6 +35,7 @@ app.use(express.json());
 // ---------------------------------------------------------------------------
 // Public routes (no auth)
 // ---------------------------------------------------------------------------
+app.use("/api/public", publicRouter);
 app.use("/api/auth", authRouter);
 
 app.get("/api/health", (_req, res) => {
@@ -53,6 +56,17 @@ app.use("/api/merchandise", requireAuth, merchandiseRouter);
 app.use("/api/testimonials", requireAuth, testimonialsRouter);
 app.use("/api/inquiries", requireAuth, inquiriesRouter);
 app.use("/api/admin-users", requireAuth, adminUsersRouter);
+
+// ---------------------------------------------------------------------------
+// Serve frontend (production build from client/dist)
+// ---------------------------------------------------------------------------
+const clientDist = path.join(__dirname, "../client/dist");
+app.use(express.static(clientDist));
+
+// SPA catch-all: any non-API route serves the React app
+app.get("/{*splat}", (_req, res) => {
+  res.sendFile(path.join(clientDist, "index.html"));
+});
 
 // ---------------------------------------------------------------------------
 // Start

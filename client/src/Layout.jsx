@@ -20,18 +20,18 @@ import {
 } from "lucide-react";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/programs", label: "Programas", icon: BookOpen },
-  { to: "/schedule", label: "Horarios", icon: Calendar },
-  { to: "/instructors", label: "Instructores", icon: Users },
-  { to: "/gallery", label: "Galería", icon: Image },
-  { to: "/announcements", label: "Anuncios", icon: Megaphone },
-  { to: "/merchandise", label: "Mercancía", icon: ShoppingBag },
-  { to: "/testimonials", label: "Testimonios", icon: Quote },
-  { to: "/site-content", label: "Contenido", icon: FileText },
-  { to: "/contact-info", label: "Contacto", icon: Phone },
-  { to: "/inquiries", label: "Consultas", icon: MessageSquare },
-  { to: "/admin-users", label: "Admins", icon: Shield },
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/admin/programs", label: "Programas", icon: BookOpen },
+  { to: "/admin/schedule", label: "Horarios", icon: Calendar },
+  // { to: "/admin/instructors", label: "Instructores", icon: Users },
+  { to: "/admin/gallery", label: "Galería", icon: Image },
+  // { to: "/admin/announcements", label: "Anuncios", icon: Megaphone },
+  { to: "/admin/merchandise", label: "Mercancía", icon: ShoppingBag },
+  { to: "/admin/testimonials", label: "Testimonios", icon: Quote },
+  { to: "/admin/site-content", label: "Contenido", icon: FileText },
+  { to: "/admin/contact-info", label: "Contacto", icon: Phone },
+  // { to: "/admin/inquiries", label: "Consultas", icon: MessageSquare },
+  { to: "/admin/admin-users", label: "Admins", icon: Shield },
 ];
 
 export default function Layout() {
@@ -53,7 +53,7 @@ export default function Layout() {
             <NavLink
               key={to}
               to={to}
-              end={to === "/"}
+              end={to === "/admin"}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-5 py-2.5 text-sm transition-colors ${
                   isActive
