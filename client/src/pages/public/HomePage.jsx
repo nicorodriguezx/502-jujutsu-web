@@ -108,6 +108,8 @@ export default function HomePage() {
   const [schedule, setSchedule] = useState([]);
   const [merchandise, setMerchandise] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
+  const [heroImages, setHeroImages] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     fetch("/api/public/site-content").then((r) => r.json()).then(setContent).catch(console.error);
@@ -115,7 +117,20 @@ export default function HomePage() {
     fetch("/api/public/schedule").then((r) => r.json()).then(setSchedule).catch(console.error);
     fetch("/api/public/merchandise").then((r) => r.json()).then(setMerchandise).catch(console.error);
     fetch("/api/public/testimonials").then((r) => r.json()).then(setTestimonials).catch(console.error);
+    fetch("/api/public/gallery?category=hero").then((r) => r.json()).then(setHeroImages).catch(console.error);
   }, []);
+
+  // Hero image carousel effect
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    
+    const interval = parseInt(content.hero_image_transition_interval) || 5000;
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [heroImages.length, content.hero_image_transition_interval]);
 
   const whatsappUrl = contact?.whatsapp_number
     ? `https://wa.me/${contact.whatsapp_number.replace(/\D/g, "")}${
@@ -163,11 +178,36 @@ export default function HomePage() {
         id="hero"
         className="relative min-h-screen flex items-center justify-center overflow-hidden"
       >
-        {/* Background: dark gradient with subtle pattern.
-            Replace with a real dojo photo via bg-[url(...)] later. */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#001a33] via-[#003366] to-[#0D47A1]">
-          {/* Subtle overlay pattern */}
-          <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2260%22%20height%3D%2260%22%3E%3Cpath%20d%3D%22M30%200L60%2030L30%2060L0%2030Z%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%220.5%22%2F%3E%3C%2Fsvg%3E')]" />
+        {/* Background Images with Carousel Effect */}
+        <div className="absolute inset-0">
+          {/* Fallback gradient if no images */}
+          {heroImages.length === 0 && (
+            <div className="absolute inset-0 bg-gradient-to-br from-[#001a33] via-[#003366] to-[#0D47A1]">
+              <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2260%22%20height%3D%2260%22%3E%3Cpath%20d%3D%22M30%200L60%2030L30%2060L0%2030Z%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%220.5%22%2F%3E%3C%2Fsvg%3E')]" />
+            </div>
+          )}
+          
+          {/* Background Images Carousel */}
+          {heroImages.map((image, index) => (
+            <div
+              key={image.id}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentImageIndex ? 'opacity-100' : 'opacity-0'
+              }`}
+            >
+              <img
+                src={image.url}
+                alt={image.alt_text}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+          
+          {/* Dark overlay for text readability */}
+          <div 
+            className="absolute inset-0 bg-black"
+            style={{ opacity: parseFloat(content.hero_background_overlay_opacity) || 0.6 }}
+          />
         </div>
 
         {/* Content */}
@@ -242,8 +282,15 @@ export default function HomePage() {
       {/* ================================================================= */}
       {/* PROGRAMAS SECTION                                                */}
       {/* ================================================================= */}
-      <section id="programas" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="programas" className="py-20 bg-white relative">
+        {/* Optional background image overlay */}
+        {content.programas_background_style === 'image' && (
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute inset-0 bg-gradient-to-b from-gray-100 to-white" />
+          </div>
+        )}
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Section Header */}
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-[#003366]/10 text-[#003366] rounded-full px-4 py-1.5 mb-4">
@@ -267,27 +314,41 @@ export default function HomePage() {
               return (
                 <div
                   key={program.id}
-                  className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow"
+                  className="group bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                 >
-                  {/* Icon and Title */}
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-[#003366] rounded-lg flex items-center justify-center">
-                      <IconComponent className="w-6 h-6 text-white" />
+                  {/* Optional Program Image Header */}
+                  {program.image_url && (
+                    <div className="relative h-48 overflow-hidden bg-gray-100">
+                      <img
+                        src={program.image_url}
+                        alt={program.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     </div>
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900">{program.name}</h3>
-                      <p className="text-sm text-[#003366] font-medium">{program.subtitle}</p>
+                  )}
+                  
+                  <div className="p-6">
+                    {/* Icon and Title */}
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-[#003366] rounded-lg flex items-center justify-center group-hover:bg-[#0D47A1] transition-colors">
+                        <IconComponent className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900">{program.name}</h3>
+                        <p className="text-sm text-[#003366] font-medium">{program.subtitle}</p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Description */}
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                    {program.description}
-                  </p>
+                    {/* Description */}
+                    <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                      {program.description}
+                    </p>
 
-                  {/* Target Audience */}
-                  <div className="text-xs text-gray-500">
-                    <span className="capitalize">{program.target_audience}</span>
+                    {/* Target Audience */}
+                    <div className="text-xs text-gray-500">
+                      <span className="capitalize">{program.target_audience}</span>
+                    </div>
                   </div>
                 </div>
               );

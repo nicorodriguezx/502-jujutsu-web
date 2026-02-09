@@ -47,7 +47,7 @@ router.get("/programs", async (_req, res) => {
   try {
     const { rows } = await db.query(
       `SELECT id, name, slug, subtitle, description,
-              age_range_min, age_range_max, target_audience
+              age_range_min, age_range_max, target_audience, image_url
          FROM programs
         WHERE is_active = TRUE
         ORDER BY display_order ASC`
@@ -97,7 +97,7 @@ router.get("/instructors", async (_req, res) => {
 router.get("/gallery", async (req, res) => {
   try {
     const { category } = req.query;
-    let query = `SELECT url, alt_text, caption, category
+    let query = `SELECT id, url, alt_text, caption, category
                    FROM gallery_images
                   WHERE is_active = TRUE`;
     const params = [];

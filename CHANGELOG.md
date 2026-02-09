@@ -4,6 +4,168 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-02-09
+
+### ✨ **Added - Complete Image Management & Visual Enhancement System**
+
+#### **📤 Direct File Upload**
+- **File Upload in Admin Panel** - Upload images directly instead of pasting URLs
+  - Gallery Images page supports file upload with toggle between upload/URL modes
+  - Programs page supports file upload for program images
+  - Real-time upload progress indicators
+  - Image preview after successful upload
+- **Multiple Upload Support** - Batch upload up to 10 images at once
+- **Supported Formats** - JPEG, PNG, WebP, GIF (all converted to WebP)
+
+#### **🎨 Automatic WebP Conversion**
+- **Smart Image Processing** - All uploads automatically converted to WebP format
+  - 25-35% smaller than JPEG at same quality
+  - 80%+ smaller than PNG for photos
+  - Lossless quality at high compression ratios
+- **Image Optimization** - Sharp library handles conversion
+  - Configurable quality (default 85%)
+  - Smart resizing based on preset
+  - Progressive encoding for faster loading
+  - Effort level 6 (maximum compression)
+- **Multiple Presets** - Pre-configured settings for different use cases:
+  - `hero`: 1920px width, 85% quality (hero backgrounds)
+  - `program`: 1200px width, 85% quality (program cards)
+  - `gallery`: 1600px width, 85% quality (gallery images)
+  - `thumbnail`: 400px width, 80% quality (thumbnails)
+  - `merchandise`: 800px width, 85% quality (products)
+
+#### **☁️ Cloudflare R2 Storage Integration**
+- **S3-Compatible Storage** - Seamless upload to Cloudflare R2
+  - No egress fees (free bandwidth)
+  - Global CDN distribution included
+  - Secure credential-based access
+  - Public URL generation
+- **R2 Upload Service** (`server/services/r2Upload.js`)
+  - Complete upload pipeline handling
+  - Automatic filename generation with timestamps
+  - Secure file deletion support
+  - Error handling and retry logic
+- **Environment Configuration** - R2 credentials in .env:
+  - `CLOUDFLARE_R2_ACCOUNT_ID`
+  - `CLOUDFLARE_R2_ACCESS_KEY_ID`
+  - `CLOUDFLARE_R2_SECRET_ACCESS_KEY`
+  - `CLOUDFLARE_R2_BUCKET_NAME`
+  - `CLOUDFLARE_R2_PUBLIC_URL`
+
+#### **🔌 Upload API Endpoints**
+- **POST /api/upload/image** - Upload single image with WebP conversion
+  - Multipart form data support
+  - Query params for preset, width, quality
+  - Returns public URL
+- **POST /api/upload/multiple** - Batch upload multiple images
+  - Process up to 10 images in parallel
+  - Returns array of URLs
+- **DELETE /api/upload/image** - Delete image from R2 storage
+  - Removes file from bucket
+  - Validates R2 URL before deletion
+- **GET /api/upload/presets** - Get available image processing presets
+
+#### **🛡️ Security & Validation**
+- **File Type Validation** - Only image formats allowed
+- **File Size Limit** - 10MB maximum per file
+- **JWT Authentication** - All upload endpoints protected
+- **Secure Credentials** - R2 keys stored in environment variables
+- **Error Handling** - Comprehensive error messages and logging
+
+#### **🎯 Admin Panel Enhancements**
+- **Gallery Images Page** - Enhanced with upload support
+  - Toggle between "Subir archivo" and "URL externa"
+  - File input with drag-drop support
+  - Upload progress indicator
+  - Automatic URL population after upload
+  - Image preview with error handling
+- **Programs Page** - File upload for program images
+  - Upload button with preset (program size)
+  - "Or" divider for URL input
+  - Live image preview
+  - Both upload and URL input available
+
+### 🔧 **Changed**
+- **Dependencies Added**:
+  - `@aws-sdk/client-s3@^3.710.0` - S3-compatible client for R2
+  - `multer@^1.4.5-lts.1` - File upload middleware
+  - `sharp@^0.33.5` - High-performance image processing
+- **Server Architecture** - New upload service layer
+- **.env.example** - Updated with R2 configuration template
+
+### 🔧 **Server Configuration**
+- **Content Security Policy** - Updated Helmet configuration to allow R2 image domains
+  - Added `*.r2.dev` and `*.cloudflare.com` to allowed image sources
+  - Supports Cloudflare R2 CDN images in admin panel and public site
+
+### 📚 **Documentation Added**
+- **`docs/image-upload-system.md`** - Complete technical documentation for image upload system
+- **`docs/image-upload-quickstart.md`** - Quick setup guide for image uploads
+- **`docs/image-upload-summary.md`** - Feature overview and implementation summary
+- **`docs/visual-enhancements-summary.md`** - Visual enhancements overview and features
+- **`docs/visual-enhancements-setup.md`** - Setup instructions for visual features
+- **`docs/visual-enhancements-implementation.md`** - Technical implementation details
+
+### 📦 **Technical Details**
+- **Memory-based Upload** - Files processed in-memory (no temp files)
+- **Parallel Processing** - Multiple images processed simultaneously
+- **Cache Control** - Images cached for 1 year (`max-age=31536000`)
+- **Content Type** - Proper `image/webp` MIME type set
+- **Progressive Enhancement** - Falls back to URL input if upload fails
+
+#### **📸 Background Images & Visual Content**
+- **Hero Background Images** - Support for dynamic background image carousel in hero section
+  - Fetch images from gallery with "hero" category
+  - Automatic slideshow with configurable transition intervals
+  - Configurable overlay opacity for text readability
+  - Fallback to gradient if no images available
+- **Program Images** - Added optional `image_url` field to programs table
+  - Display program images in card headers on public site
+  - Hover effects and visual transitions on program cards
+  - Admin interface updated to manage program images
+- **Gallery Categories** - Added "hero" category to gallery_images table
+  - Allows dedicated management of hero background images
+  - Separate from training/facilities/events images
+- **Visual Content Keys** - New site_content keys for visual customization:
+  - `hero_background_image_1`, `hero_background_image_2`, `hero_background_image_3`
+  - `hero_background_overlay_opacity` - Controls darkness of hero overlay
+  - `hero_image_transition_interval` - Milliseconds between image transitions
+  - `programas_background_style`, `schedule_background_style`, `testimonials_background_style`
+  - `use_parallax_effects` - Enable/disable parallax scrolling
+
+#### **🎨 Enhanced UI Components**
+- **Enhanced Program Cards** - Visual improvements to program display
+  - Image headers with gradient overlays
+  - Hover animations (scale, shadow, translate)
+  - Better visual hierarchy with icons and imagery
+- **Hero Section Carousel** - Smooth transitions between background images
+  - Cross-fade effect with opacity transitions
+  - Automatic rotation based on configurable interval
+  - Multiple image support with array-based state management
+
+#### **🛠 Admin Panel Updates**
+- **Gallery Management** - Added "hero" to available image categories
+- **Program Management** - New image URL field with preview support
+  - Optional image URL input in program edit form
+  - Help text explaining image usage
+  - Full CRUD support for program images
+
+### 🔧 **Changed**
+- **HomePage Component** - Refactored to support dynamic background images
+  - New state management for hero images and carousel
+  - useEffect hook for automatic image transitions
+  - Enhanced visual styling throughout
+- **Hero Content** - Updated default hero text to be more action-oriented
+  - More concise headline emphasizing Valente methodology
+  - Transformative subheadline focusing on lifestyle change
+
+### 📦 **Database Changes**
+- **Migration 002** - Visual enhancements schema updates
+  - Added `image_url` column to `programs` table (nullable TEXT)
+  - Added hero-specific content keys to `site_content`
+  - Sample gallery images for hero category (using Unsplash placeholders)
+  - Background style configuration keys
+
 ## [0.2.0] - 2026-02-08
 
 ### 🚀 **Major Feature Release - Public Website Launch**
@@ -64,9 +226,9 @@ Complete implementation of the public-facing website alongside the existing admi
 - **Typography** - Modern font stack with improved readability
 
 ### 📝 **Migration & Setup Notes**
-- **Database Migration** - Run `database/migration-001.sql` to add new tables and update existing data
-- **Environment Setup** - No additional environment variables required
-- **Content Population** - New content sections will be populated via seed data or admin panel
+- **Database Migration** - Run `database/migration-002-visual-enhancements.sql` to add visual enhancements schema
+- **Environment Setup** - Add Cloudflare R2 credentials to `.env` file (see prerequisites)
+- **Content Population** - Hero background images can be added via admin gallery (category: "hero")
 - **URL Structure** - Public website at root URL (`/`), admin panel at `/admin`
 - **Backward Compatibility** - All existing admin panel functionality preserved
 

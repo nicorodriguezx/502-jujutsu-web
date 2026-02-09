@@ -13,12 +13,14 @@ This project consists of:
 - **Professional Public Website** - Complete landing page with hero, programs, schedule, merchandise, testimonials, and contact sections
 - **6 Martial Arts Programs** (First Steps through Law Enforcement training)
 - **Complete Content Management** - All public and admin content managed through web interface
+- **Advanced Image Management** - Direct file uploads with automatic WebP conversion and Cloudflare R2 storage
+- **Dynamic Visual Content** - Hero background image carousel and program header images with hover effects
 - **Merchandise Catalog** - Product showcase for in-person sales (kimonos, equipment, apparel)
 - **Student Testimonials** - Success stories with featured content highlighting
 - **Interactive Class Schedule** - Accordion-style weekly timetable with 25+ class entries
 - **Lead Management** - Inquiry tracking and WhatsApp integration
 - **Full Spanish Localization** - Guatemala City focus with proper cultural terminology
-- **Photo Gallery** - Multi-category image management
+- **Photo Gallery** - Multi-category image management (training, facilities, events, hero backgrounds)
 - **Social Media Integration** - Instagram and WhatsApp connectivity
 
 ## 🛠 Tech Stack
@@ -26,8 +28,11 @@ This project consists of:
 ### Backend
 - **Node.js** (18.x+) with Express.js
 - **PostgreSQL** (15.x+) with pg library
+- **Image Processing**: Sharp library for WebP conversion and optimization
+- **Cloud Storage**: Cloudflare R2 with AWS SDK for scalable image hosting
+- **File Upload**: Multer middleware for secure multipart form handling
 - **Authentication**: JWT tokens with bcrypt password hashing
-- **Security**: Helmet.js, CORS
+- **Security**: Helmet.js with CSP, CORS
 - **Deployment**: Designed for Railway hosting
 
 ### Frontend (Admin Panel)
@@ -47,6 +52,7 @@ This project consists of:
 - Node.js 18+
 - PostgreSQL 15+
 - npm or yarn
+- Cloudflare R2 account (for image uploads)
 
 ### Installation
 
@@ -66,12 +72,18 @@ This project consists of:
    # Run schema and seed data
    psql -d jujutsu_502 -f database/schema.sql
    psql -d jujutsu_502 -f database/seed.sql
+   
+   # Run visual enhancements migration
+   psql -d jujutsu_502 -f database/migration-002-visual-enhancements.sql
    ```
 
 3. **Configure environment:**
    ```bash
    cp .env.example .env
-   # Edit .env with your DATABASE_URL and JWT_SECRET
+   # Edit .env with your settings:
+   # - DATABASE_URL
+   # - JWT_SECRET
+   # - Cloudflare R2 credentials (for image uploads)
    ```
 
 4. **Start development servers:**
@@ -195,9 +207,62 @@ psql -d jujutsu_502 -f database/migration-001.sql  # Run migrations
 ## 🎨 Design System
 
 - **Primary Color**: Navy blue (#003366/#0D47A1)
+- **Secondary Colors**: Light gray, blue, black (per academy branding)
 - **Typography**: Sans-serif (Montserrat/Roboto/Open Sans)
 - **Layout**: Mobile-first responsive design
 - **Icons**: Lucide React icon library
+
+### Visual Content Management
+
+#### Hero Background Images
+The hero section supports dynamic background images that rotate automatically:
+- Images are stored in the `gallery_images` table with category `"hero"`
+- Configure transition interval via `hero_image_transition_interval` in site_content
+- Adjust overlay darkness via `hero_background_overlay_opacity` (0.0 to 1.0)
+- Falls back to gradient background if no hero images exist
+
+#### Program Images
+Each program can have an optional header image:
+- Add `image_url` when creating/editing programs in admin panel
+- Images display in program cards with hover effects
+- Recommended size: 800x600px or similar 4:3 aspect ratio
+
+#### Gallery Categories
+Images are organized by category:
+- `hero` - Hero section background images
+- `training` - Training session photos
+- `facilities` - Dojo and equipment photos
+- `events` - Special events and seminars
+- `instructors` - Instructor profile photos
+- `students` - Student achievement photos
+
+### Image Upload System
+
+#### Direct File Uploads
+Admins can upload images directly instead of using URLs:
+- **Gallery Images**: Upload via admin panel with automatic WebP conversion
+- **Program Images**: Upload program images directly in Programs page
+- **Automatic Optimization**: All uploads converted to WebP format (25-80% smaller)
+- **Cloudflare R2 Storage**: Images stored in R2 with global CDN distribution
+
+#### WebP Conversion
+All uploaded images are automatically optimized:
+- Converted to WebP format for maximum compression
+- Multiple presets available (hero: 1920px, program: 1200px, gallery: 1600px)
+- Quality: 85% (excellent balance of quality and file size)
+- Progressive encoding for faster loading
+
+#### Image Upload Configuration
+Set up Cloudflare R2 in `.env`:
+```bash
+CLOUDFLARE_R2_ACCOUNT_ID=your_account_id
+CLOUDFLARE_R2_ACCESS_KEY_ID=your_access_key
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=your_secret_key
+CLOUDFLARE_R2_BUCKET_NAME=502-jujutsu-images
+CLOUDFLARE_R2_PUBLIC_URL=https://pub-xxx.r2.dev
+```
+
+See `docs/image-upload-system.md` for complete setup instructions.
 
 ## 📈 Features
 

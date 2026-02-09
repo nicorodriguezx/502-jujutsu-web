@@ -11,6 +11,7 @@ const cors = require("cors");
 const requireAuth = require("./middleware/auth");
 const publicRouter = require("./routes/public");
 const authRouter = require("./routes/auth");
+const uploadRouter = require("./routes/upload");
 const programsRouter = require("./routes/programs");
 const scheduleEntriesRouter = require("./routes/scheduleEntries");
 const instructorsRouter = require("./routes/instructors");
@@ -28,7 +29,32 @@ const app = express();
 // ---------------------------------------------------------------------------
 // Middleware
 // ---------------------------------------------------------------------------
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: [
+          "'self'",
+          "data:",
+          "https:",
+          "http:",
+          "blob:",
+          "*.r2.dev",
+          "*.cloudflare.com",
+          "images.unsplash.com",
+        ],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'", "data:"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'self'"],
+      },
+    },
+  })
+);
 app.use(cors());
 app.use(express.json());
 
@@ -45,6 +71,7 @@ app.get("/api/health", (_req, res) => {
 // ---------------------------------------------------------------------------
 // Protected routes (require valid JWT)
 // ---------------------------------------------------------------------------
+app.use("/api/upload", requireAuth, uploadRouter);
 app.use("/api/programs", requireAuth, programsRouter);
 app.use("/api/schedule-entries", requireAuth, scheduleEntriesRouter);
 app.use("/api/instructors", requireAuth, instructorsRouter);

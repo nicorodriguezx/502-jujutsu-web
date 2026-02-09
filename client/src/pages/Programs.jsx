@@ -3,12 +3,14 @@
 // ---------------------------------------------------------------------------
 import { useState, useEffect } from "react";
 import api from "../api";
+import { getToken } from "../api";
 
 const EMPTY = {
   name: "",
   slug: "",
   subtitle: "",
   description: "",
+  image_url: "",
   age_range_min: "",
   age_range_max: "",
   target_audience: "children",
@@ -21,6 +23,7 @@ export default function Programs() {
   const [form, setForm] = useState({ ...EMPTY });
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchItems();
@@ -46,6 +49,7 @@ export default function Programs() {
       slug: item.slug,
       subtitle: item.subtitle || "",
       description: item.description,
+      image_url: item.image_url || "",
       age_range_min: item.age_range_min ?? "",
       age_range_max: item.age_range_max ?? "",
       target_audience: item.target_audience,
@@ -63,6 +67,7 @@ export default function Programs() {
     const payload = {
       ...form,
       subtitle: form.subtitle || null,
+      image_url: form.image_url || null,
       age_range_min: form.age_range_min === "" ? null : Number(form.age_range_min),
       age_range_max: form.age_range_max === "" ? null : Number(form.age_range_max),
       display_order: Number(form.display_order),
@@ -78,6 +83,39 @@ export default function Programs() {
       fetchItems();
     } catch (err) {
       setError(err.message);
+    }
+  }
+
+  async function handleImageUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await fetch("/api/upload/image?preset=program", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Upload failed");
+      }
+
+      const data = await response.json();
+      setForm({ ...form, image_url: data.url });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -165,6 +203,61 @@ export default function Programs() {
           {field("Nombre", "name", "text", { required: true })}
           {field("Slug", "slug", "text", { required: true })}
           {field("Subtítulo", "subtitle")}
+          
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Imagen del programa (opcional)
+            </label>
+            <div className="space-y-3">
+              {/* File Upload */}
+              <div>
+                <input
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                  onChange={handleImageUpload}
+                  disabled={uploading}
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                />
+                {uploading && (
+                  <p className="mt-1 text-sm text-blue-600">Subiendo y optimizando imagen...</p>
+                )}
+              </div>
+              
+              {/* Or URL Input */}
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="bg-white px-2 text-gray-500">o ingresa URL</span>
+                </div>
+              </div>
+              
+              <input
+                type="text"
+                value={form.image_url}
+                onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                placeholder="https://ejemplo.com/imagen-programa.jpg"
+                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              />
+              
+              {form.image_url && (
+                <div className="mt-2">
+                  <img 
+                    src={form.image_url} 
+                    alt="Preview" 
+                    className="max-w-xs rounded border"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              La imagen se mostrará en la tarjeta del programa. Recomendado: 800x600px
+            </p>
+          </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">Audiencia</label>

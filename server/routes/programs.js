@@ -10,7 +10,7 @@ const router = Router();
 router.get("/", async (_req, res) => {
   try {
     const { rows } = await db.query(
-      `SELECT id, name, slug, subtitle, description,
+      `SELECT id, name, slug, subtitle, description, image_url,
               age_range_min, age_range_max, target_audience,
               display_order, is_active, created_at, updated_at
          FROM programs
@@ -27,7 +27,7 @@ router.get("/", async (_req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const { rows } = await db.query(
-      `SELECT id, name, slug, subtitle, description,
+      `SELECT id, name, slug, subtitle, description, image_url,
               age_range_min, age_range_max, target_audience,
               display_order, is_active, created_at, updated_at
          FROM programs
@@ -51,6 +51,7 @@ router.post("/", async (req, res) => {
     slug,
     subtitle,
     description,
+    image_url,
     age_range_min,
     age_range_max,
     target_audience,
@@ -67,15 +68,16 @@ router.post("/", async (req, res) => {
   try {
     const { rows } = await db.query(
       `INSERT INTO programs
-              (name, slug, subtitle, description, age_range_min, age_range_max,
+              (name, slug, subtitle, description, image_url, age_range_min, age_range_max,
                target_audience, display_order, is_active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING *`,
       [
         name,
         slug,
         subtitle || null,
         description,
+        image_url || null,
         age_range_min ?? null,
         age_range_max ?? null,
         target_audience,
@@ -100,6 +102,7 @@ router.put("/:id", async (req, res) => {
     slug,
     subtitle,
     description,
+    image_url,
     age_range_min,
     age_range_max,
     target_audience,
@@ -114,18 +117,20 @@ router.put("/:id", async (req, res) => {
               slug            = COALESCE($2, slug),
               subtitle        = $3,
               description     = COALESCE($4, description),
-              age_range_min   = $5,
-              age_range_max   = $6,
-              target_audience = COALESCE($7, target_audience),
-              display_order   = COALESCE($8, display_order),
-              is_active       = COALESCE($9, is_active)
-        WHERE id = $10
+              image_url       = $5,
+              age_range_min   = $6,
+              age_range_max   = $7,
+              target_audience = COALESCE($8, target_audience),
+              display_order   = COALESCE($9, display_order),
+              is_active       = COALESCE($10, is_active)
+        WHERE id = $11
         RETURNING *`,
       [
         name,
         slug,
         subtitle,
         description,
+        image_url,
         age_range_min ?? null,
         age_range_max ?? null,
         target_audience,

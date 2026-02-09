@@ -3,8 +3,9 @@
 // ---------------------------------------------------------------------------
 import { useState, useEffect } from "react";
 import api from "../api";
+import { getToken } from "../api";
 
-const CATEGORIES = ["training", "facilities", "events", "instructors", "students"];
+const CATEGORIES = ["training", "facilities", "events", "instructors", "students", "hero"];
 const EMPTY = { url: "", alt_text: "", caption: "", category: "training", display_order: 0, is_active: true };
 
 export default function GalleryImages() {
@@ -12,6 +13,8 @@ export default function GalleryImages() {
   const [form, setForm] = useState({ ...EMPTY });
   const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadMode, setUploadMode] = useState("url"); // "url" or "file"
 
   useEffect(() => { fetchItems(); }, []);
 
@@ -19,7 +22,12 @@ export default function GalleryImages() {
     try { setItems(await api.get("/api/gallery-images")); } catch (err) { console.error(err); }
   }
 
-  function resetForm() { setForm({ ...EMPTY }); setEditingId(null); setError(null); }
+  function resetForm() { 
+    setForm({ ...EMPTY }); 
+    setEditingId(null); 
+    setError(null);
+    setUploadMode("url");
+  }
 
   function startEdit(item) {
     setForm({
@@ -32,6 +40,44 @@ export default function GalleryImages() {
     });
     setEditingId(item.id);
     setError(null);
+    setUploadMode("url");
+  }
+
+  async function handleFileUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      // Use appropriate preset based on category
+      const preset = form.category === "hero" ? "hero" : "gallery";
+      
+      const response = await fetch(`/api/upload/image?preset=${preset}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Upload failed");
+      }
+
+      const data = await response.json();
+      setForm({ ...form, url: data.url });
+      setUploadMode("url");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function handleSubmit(e) {
@@ -109,11 +155,69 @@ export default function GalleryImages() {
         </h3>
         {error && <div className="bg-red-50 text-red-700 text-sm px-3 py-2 rounded border border-red-200">{error}</div>}
 
+        {/* Upload Mode Toggle */}
+        <div className="flex gap-2 border-b pb-3">
+          <button
+            type="button"
+            onClick={() => setUploadMode("file")}
+            className={`px-4 py-2 text-sm font-medium rounded-md ${
+              uploadMode === "file"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            Subir archivo
+          </button>
+          <button
+            type="button"
+            onClick={() => setUploadMode("url")}
+            className={`px-4 py-2 text-sm font-medium rounded-md ${
+              uploadMode === "url"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+          >
+            URL externa
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="sm:col-span-2">
-            <label className="block text-sm font-medium text-gray-700">URL de imagen</label>
-            <input type="text" value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
-          </div>
+          {/* Image Upload/URL Input */}
+          {uploadMode === "file" ? (
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Subir imagen (se convertirá a WebP)
+              </label>
+              <input
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                onChange={handleFileUpload}
+                disabled={uploading}
+                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+              />
+              {uploading && (
+                <p className="mt-2 text-sm text-blue-600">Subiendo y optimizando imagen...</p>
+              )}
+              {form.url && !uploading && (
+                <div className="mt-2">
+                  <p className="text-sm text-green-600 mb-2">✓ Imagen subida exitosamente</p>
+                  <img src={form.url} alt="Preview" className="max-w-xs rounded border" />
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-700">URL de imagen</label>
+              <input 
+                type="text" 
+                value={form.url} 
+                onChange={(e) => setForm({ ...form, url: e.target.value })} 
+                required 
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" 
+              />
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700">Texto alt</label>
             <input type="text" value={form.alt_text} onChange={(e) => setForm({ ...form, alt_text: e.target.value })} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
@@ -139,7 +243,7 @@ export default function GalleryImages() {
         </div>
 
         <div className="flex gap-3">
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
+          <button type="submit" disabled={uploading || !form.url} className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed">
             {editingId ? "Guardar cambios" : "Crear imagen"}
           </button>
           {editingId && (
