@@ -4,7 +4,7 @@
 const { Router } = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const db = require("../db");
+const prisma = require("../db");
 
 const router = Router();
 
@@ -19,18 +19,20 @@ router.post("/login", async (req, res) => {
   }
 
   try {
-    const { rows } = await db.query(
-      `SELECT id, email, password_hash, full_name, is_active
-         FROM admin_users
-        WHERE email = $1`,
-      [email]
-    );
+    const user = await prisma.adminUser.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        password_hash: true,
+        full_name: true,
+        is_active: true,
+      },
+    });
 
-    if (rows.length === 0) {
+    if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
-
-    const user = rows[0];
 
     if (!user.is_active) {
       return res.status(401).json({ error: "Account is disabled" });

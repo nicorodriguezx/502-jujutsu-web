@@ -27,7 +27,7 @@ This project consists of:
 
 ### Backend
 - **Node.js** (18.x+) with Express.js
-- **PostgreSQL** (15.x+) with pg library
+- **Prisma ORM** - Type-safe database operations with PostgreSQL (15.x+)
 - **Image Processing**: Sharp library for WebP conversion and optimization
 - **Cloud Storage**: Cloudflare R2 with AWS SDK for scalable image hosting
 - **File Upload**: Multer middleware for secure multipart form handling
@@ -43,8 +43,9 @@ This project consists of:
 - **Lucide React** for icons
 
 ### Database
-- **PostgreSQL** with explicit schema design
-- **11 main tables**: programs, schedule_entries, instructors, gallery_images, announcements, merchandise, testimonials, site_content, contact_info, inquiries, admin_users
+- **Prisma ORM** with PostgreSQL schema definition
+- **11 main models**: Program, ScheduleEntry, Instructor, GalleryImage, Announcement, Merchandise, Testimonial, SiteContent, ContactInfo, Inquiry, AdminUser
+- **Type-safe queries** with auto-generated TypeScript definitions
 
 ## 🚀 Quick Start
 
@@ -53,6 +54,7 @@ This project consists of:
 - PostgreSQL 15+
 - npm or yarn
 - Cloudflare R2 account (for image uploads)
+- Prisma CLI (automatically installed as dev dependency)
 
 ### Installation
 
@@ -60,7 +62,7 @@ This project consists of:
    ```bash
    git clone <repository-url>
    cd 502-jujutsu-web
-   npm install
+   npm install  # Automatically generates Prisma client via postinstall script
    cd client && npm install && cd ..
    ```
 
@@ -69,12 +71,12 @@ This project consists of:
    # Create PostgreSQL database
    createdb jujutsu_502
 
-   # Run schema and seed data
-   psql -d jujutsu_502 -f database/schema.sql
-   psql -d jujutsu_502 -f database/seed.sql
-   
-   # Run visual enhancements migration
-   psql -d jujutsu_502 -f database/migration-002-visual-enhancements.sql
+   # Generate Prisma client and run migrations
+   npm run prisma:generate
+   npm run prisma:migrate
+
+   # Seed database with initial data
+   npm run prisma:seed
    ```
 
 3. **Configure environment:**
@@ -126,31 +128,42 @@ npm start           # Production start
 npm run setup-db    # Initialize database (schema + seed)
 npm run create-admin # Create admin user
 
+# Prisma Database Management
+npm run prisma:generate  # Generate Prisma client
+npm run prisma:pull      # Pull schema from database
+npm run prisma:migrate   # Run database migrations
+npm run prisma:studio    # Launch Prisma Studio GUI
+npm run prisma:seed      # Populate database with seed data
+
 # Frontend (client/)
 npm run dev         # Vite dev server
 npm run build       # Production build
 npm run preview     # Preview built app
 
-# Database
-psql -d jujutsu_502 -f database/migration-001.sql  # Run migrations
+# Legacy Database (if needed)
+psql -d jujutsu_502 -f database/migration-001.sql  # Run legacy migrations
 ```
 
 ### Project Structure
 ```
 502-jujutsu-web/
-├── server/                 # Backend API
-│   ├── index.js           # Express app entry
-│   ├── db.js             # PostgreSQL connection
-│   ├── middleware/       # Auth middleware
-│   └── routes/           # CRUD route handlers
-├── client/               # Admin panel frontend
+├── prisma/               # Prisma ORM configuration
+│   ├── schema.prisma    # Database schema definition
+│   └── seed.js          # Database seeding script
+├── server/               # Backend API
+│   ├── index.js         # Express app entry
+│   ├── db.js           # Prisma client connection
+│   ├── middleware/     # Auth middleware
+│   ├── routes/         # CRUD route handlers
+│   └── utils/          # Shared utilities (formatters.js)
+├── client/             # Admin panel frontend
 │   ├── src/
-│   │   ├── pages/        # Admin pages (CRUD interfaces)
-│   │   ├── api.js        # Fetch wrapper with JWT
+│   │   ├── pages/      # Admin pages (CRUD interfaces)
+│   │   ├── api.js      # Fetch wrapper with JWT
 │   │   ├── AuthContext.jsx # Login state management
-│   │   └── Layout.jsx    # Admin sidebar navigation
-├── database/             # SQL schema and seed data
-└── docs/                # Documentation (features.md, tech-stack.md)
+│   │   └── Layout.jsx  # Admin sidebar navigation
+├── database/           # Legacy SQL files (for reference)
+└── docs/              # Documentation (features.md, tech-stack.md)
 ```
 
 ## 🔐 Authentication
@@ -283,24 +296,32 @@ See `docs/image-upload-system.md` for complete setup instructions.
 - Student testimonials management
 - Inquiry tracking and status management
 
-## 🔄 Database Migrations
+## 🔄 Database Management
 
-When updating from previous versions:
+### Prisma Migrations
 
-1. **Run migration script:**
+The project now uses Prisma for database schema management and migrations:
+
+1. **Initial setup (new installations):**
    ```bash
-   psql -d jujutsu_502 -f database/migration-001.sql
+   npm run prisma:migrate  # Create database schema
+   npm run prisma:seed     # Populate with initial data
    ```
 
-2. **Migration 001 includes:**
-   - Added `merchandise` table for product catalog management
-   - Added `testimonials` table for student success stories
-   - New "First Steps" program (ages 2-5) with display order adjustments
-   - Updated Little Champs age range from 3-10 to 5-9
-   - Updated branding from "Valente Brothers" to "Hermanos Valente"
-   - Translated all program target audiences to Spanish
-   - Added comprehensive site content keys for public website sections
-   - Populated complete weekly class schedule with 25+ entries
+2. **Schema updates:**
+   ```bash
+   npm run prisma:migrate  # Apply pending migrations
+   npm run prisma:generate # Regenerate client types
+   ```
+
+3. **Database exploration:**
+   ```bash
+   npm run prisma:studio   # Launch web-based database GUI
+   ```
+
+### Legacy SQL Migrations
+
+For reference, previous versions used raw SQL migrations. The `database/` folder contains legacy migration files that have been incorporated into the Prisma schema.
 
 ## 🤝 Contributing
 

@@ -3,16 +3,18 @@
 // No authentication required. GET only.
 // ---------------------------------------------------------------------------
 const { Router } = require("express");
-const db = require("../db");
+const prisma = require("../db");
+const { formatTime } = require("../utils/formatters");
 
 const router = Router();
 
 // GET /api/public/site-content -- all content entries
 router.get("/site-content", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT section_key, content_text FROM site_content ORDER BY section_key`
-    );
+    const rows = await prisma.siteContent.findMany({
+      select: { section_key: true, content_text: true },
+      orderBy: { section_key: "asc" },
+    });
     // Return as a key-value object for easy frontend consumption
     const content = {};
     for (const row of rows) {
@@ -28,9 +30,10 @@ router.get("/site-content", async (_req, res) => {
 // GET /api/public/contact-info -- all contact entries as key-value
 router.get("/contact-info", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT info_key, info_value FROM contact_info ORDER BY info_key`
-    );
+    const rows = await prisma.contactInfo.findMany({
+      select: { info_key: true, info_value: true },
+      orderBy: { info_key: "asc" },
+    });
     const info = {};
     for (const row of rows) {
       info[row.info_key] = row.info_value;
@@ -45,14 +48,22 @@ router.get("/contact-info", async (_req, res) => {
 // GET /api/public/programs -- active programs ordered by display_order
 router.get("/programs", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT id, name, slug, subtitle, description,
-              age_range_min, age_range_max, target_audience, image_url
-         FROM programs
-        WHERE is_active = TRUE
-        ORDER BY display_order ASC`
-    );
-    return res.json(rows);
+    const programs = await prisma.program.findMany({
+      where: { is_active: true },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        subtitle: true,
+        description: true,
+        age_range_min: true,
+        age_range_max: true,
+        target_audience: true,
+        image_url: true,
+      },
+      orderBy: { display_order: "asc" },
+    });
+    return res.json(programs);
   } catch (err) {
     console.error("GET /api/public/programs error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -62,15 +73,28 @@ router.get("/programs", async (_req, res) => {
 // GET /api/public/schedule -- active schedule entries with program name
 router.get("/schedule", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT se.day_of_week, se.start_time, se.end_time,
-              se.description, p.name AS program_name
-         FROM schedule_entries se
-         JOIN programs p ON p.id = se.program_id
-        WHERE se.is_active = TRUE AND p.is_active = TRUE
-        ORDER BY se.day_of_week ASC, se.start_time ASC`
-    );
-    return res.json(rows);
+    const entries = await prisma.scheduleEntry.findMany({
+      where: {
+        is_active: true,
+        program: { is_active: true },
+      },
+      select: {
+        day_of_week: true,
+        start_time: true,
+        end_time: true,
+        description: true,
+        program: { select: { name: true } },
+      },
+      orderBy: [{ day_of_week: "asc" }, { start_time: "asc" }],
+    });
+    // Flatten program relation and format time fields
+    const result = entries.map(({ program, ...rest }) => ({
+      ...rest,
+      start_time: formatTime(rest.start_time),
+      end_time: formatTime(rest.end_time),
+      program_name: program.name,
+    }));
+    return res.json(result);
   } catch (err) {
     console.error("GET /api/public/schedule error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -80,13 +104,16 @@ router.get("/schedule", async (_req, res) => {
 // GET /api/public/instructors -- active instructors
 router.get("/instructors", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT full_name, bio, photo_url
-         FROM instructors
-        WHERE is_active = TRUE
-        ORDER BY display_order ASC`
-    );
-    return res.json(rows);
+    const instructors = await prisma.instructor.findMany({
+      where: { is_active: true },
+      select: {
+        full_name: true,
+        bio: true,
+        photo_url: true,
+      },
+      orderBy: { display_order: "asc" },
+    });
+    return res.json(instructors);
   } catch (err) {
     console.error("GET /api/public/instructors error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -97,17 +124,23 @@ router.get("/instructors", async (_req, res) => {
 router.get("/gallery", async (req, res) => {
   try {
     const { category } = req.query;
-    let query = `SELECT id, url, alt_text, caption, category
-                   FROM gallery_images
-                  WHERE is_active = TRUE`;
-    const params = [];
+    const where = { is_active: true };
     if (category) {
-      query += ` AND category = $1`;
-      params.push(category);
+      where.category = category;
     }
-    query += ` ORDER BY display_order ASC`;
-    const { rows } = await db.query(query, params);
-    return res.json(rows);
+
+    const images = await prisma.galleryImage.findMany({
+      where,
+      select: {
+        id: true,
+        url: true,
+        alt_text: true,
+        caption: true,
+        category: true,
+      },
+      orderBy: { display_order: "asc" },
+    });
+    return res.json(images);
   } catch (err) {
     console.error("GET /api/public/gallery error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -117,15 +150,19 @@ router.get("/gallery", async (req, res) => {
 // GET /api/public/announcements -- published and active only
 router.get("/announcements", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT title, body, published_at
-         FROM announcements
-        WHERE is_active = TRUE
-          AND published_at IS NOT NULL
-          AND published_at <= now()
-        ORDER BY published_at DESC`
-    );
-    return res.json(rows);
+    const announcements = await prisma.announcement.findMany({
+      where: {
+        is_active: true,
+        published_at: { lte: new Date() },
+      },
+      select: {
+        title: true,
+        body: true,
+        published_at: true,
+      },
+      orderBy: { published_at: "desc" },
+    });
+    return res.json(announcements);
   } catch (err) {
     console.error("GET /api/public/announcements error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -135,13 +172,19 @@ router.get("/announcements", async (_req, res) => {
 // GET /api/public/merchandise -- available merchandise
 router.get("/merchandise", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT name, slug, description, price, image_url, category
-         FROM merchandise
-        WHERE is_available = TRUE
-        ORDER BY display_order ASC`
-    );
-    return res.json(rows);
+    const items = await prisma.merchandise.findMany({
+      where: { is_available: true },
+      select: {
+        name: true,
+        slug: true,
+        description: true,
+        price: true,
+        image_url: true,
+        category: true,
+      },
+      orderBy: { display_order: "asc" },
+    });
+    return res.json(items);
   } catch (err) {
     console.error("GET /api/public/merchandise error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -151,15 +194,23 @@ router.get("/merchandise", async (_req, res) => {
 // GET /api/public/testimonials -- active testimonials with program name
 router.get("/testimonials", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT t.student_name, t.content, t.photo_url,
-              t.is_featured, p.name AS program_name
-         FROM testimonials t
-         LEFT JOIN programs p ON p.id = t.program_id
-        WHERE t.is_active = TRUE
-        ORDER BY t.is_featured DESC, t.display_order ASC`
-    );
-    return res.json(rows);
+    const testimonials = await prisma.testimonial.findMany({
+      where: { is_active: true },
+      select: {
+        student_name: true,
+        content: true,
+        photo_url: true,
+        is_featured: true,
+        program: { select: { name: true } },
+      },
+      orderBy: [{ is_featured: "desc" }, { display_order: "asc" }],
+    });
+    // Flatten program relation
+    const result = testimonials.map(({ program, ...rest }) => ({
+      ...rest,
+      program_name: program?.name ?? null,
+    }));
+    return res.json(result);
   } catch (err) {
     console.error("GET /api/public/testimonials error:", err);
     return res.status(500).json({ error: "Internal server error" });

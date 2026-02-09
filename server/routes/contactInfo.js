@@ -5,19 +5,17 @@
 // Same upsert pattern as site_content.
 // ---------------------------------------------------------------------------
 const { Router } = require("express");
-const db = require("../db");
+const prisma = require("../db");
 
 const router = Router();
 
 // GET /api/contact-info -- list all contact entries
 router.get("/", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT id, info_key, info_value, updated_at
-         FROM contact_info
-        ORDER BY info_key ASC`
-    );
-    return res.json(rows);
+    const entries = await prisma.contactInfo.findMany({
+      orderBy: { info_key: "asc" },
+    });
+    return res.json(entries);
   } catch (err) {
     console.error("GET /api/contact-info error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -27,16 +25,13 @@ router.get("/", async (_req, res) => {
 // GET /api/contact-info/:key -- get one entry by info_key
 router.get("/:key", async (req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT id, info_key, info_value, updated_at
-         FROM contact_info
-        WHERE info_key = $1`,
-      [req.params.key]
-    );
-    if (rows.length === 0) {
+    const entry = await prisma.contactInfo.findUnique({
+      where: { info_key: req.params.key },
+    });
+    if (!entry) {
       return res.status(404).json({ error: "Contact info key not found" });
     }
-    return res.json(rows[0]);
+    return res.json(entry);
   } catch (err) {
     console.error("GET /api/contact-info/:key error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -52,15 +47,12 @@ router.put("/:key", async (req, res) => {
   }
 
   try {
-    const { rows } = await db.query(
-      `INSERT INTO contact_info (info_key, info_value)
-       VALUES ($1, $2)
-       ON CONFLICT (info_key) DO UPDATE
-          SET info_value = EXCLUDED.info_value
-       RETURNING *`,
-      [req.params.key, info_value]
-    );
-    return res.json(rows[0]);
+    const entry = await prisma.contactInfo.upsert({
+      where: { info_key: req.params.key },
+      update: { info_value },
+      create: { info_key: req.params.key, info_value },
+    });
+    return res.json(entry);
   } catch (err) {
     console.error("PUT /api/contact-info/:key error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -70,15 +62,14 @@ router.put("/:key", async (req, res) => {
 // DELETE /api/contact-info/:key -- remove a contact entry
 router.delete("/:key", async (req, res) => {
   try {
-    const { rowCount } = await db.query(
-      `DELETE FROM contact_info WHERE info_key = $1`,
-      [req.params.key]
-    );
-    if (rowCount === 0) {
-      return res.status(404).json({ error: "Contact info key not found" });
-    }
+    await prisma.contactInfo.delete({
+      where: { info_key: req.params.key },
+    });
     return res.status(204).end();
   } catch (err) {
+    if (err.code === "P2025") {
+      return res.status(404).json({ error: "Contact info key not found" });
+    }
     console.error("DELETE /api/contact-info/:key error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }

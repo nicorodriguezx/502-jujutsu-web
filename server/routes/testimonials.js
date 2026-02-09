@@ -2,23 +2,26 @@
 // CRUD: testimonials
 // ---------------------------------------------------------------------------
 const { Router } = require("express");
-const db = require("../db");
+const prisma = require("../db");
 
 const router = Router();
+
+/** Flatten Prisma's nested program relation into program_name */
+function flattenTestimonial({ program, ...rest }) {
+  return {
+    ...rest,
+    program_name: program?.name ?? null,
+  };
+}
 
 // GET /api/testimonials -- list all, joined with program name
 router.get("/", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT t.id, t.student_name, t.content, t.photo_url,
-              t.program_id, p.name AS program_name,
-              t.is_featured, t.display_order, t.is_active,
-              t.created_at, t.updated_at
-         FROM testimonials t
-         LEFT JOIN programs p ON p.id = t.program_id
-        ORDER BY t.display_order ASC`
-    );
-    return res.json(rows);
+    const testimonials = await prisma.testimonial.findMany({
+      include: { program: { select: { name: true } } },
+      orderBy: { display_order: "asc" },
+    });
+    return res.json(testimonials.map(flattenTestimonial));
   } catch (err) {
     console.error("GET /api/testimonials error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -28,20 +31,14 @@ router.get("/", async (_req, res) => {
 // GET /api/testimonials/:id
 router.get("/:id", async (req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT t.id, t.student_name, t.content, t.photo_url,
-              t.program_id, p.name AS program_name,
-              t.is_featured, t.display_order, t.is_active,
-              t.created_at, t.updated_at
-         FROM testimonials t
-         LEFT JOIN programs p ON p.id = t.program_id
-        WHERE t.id = $1`,
-      [req.params.id]
-    );
-    if (rows.length === 0) {
+    const testimonial = await prisma.testimonial.findUnique({
+      where: { id: req.params.id },
+      include: { program: { select: { name: true } } },
+    });
+    if (!testimonial) {
       return res.status(404).json({ error: "Testimonial not found" });
     }
-    return res.json(rows[0]);
+    return res.json(flattenTestimonial(testimonial));
   } catch (err) {
     console.error("GET /api/testimonials/:id error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -58,24 +55,20 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const { rows } = await db.query(
-      `INSERT INTO testimonials
-              (student_name, content, photo_url, program_id, is_featured, display_order, is_active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       RETURNING *`,
-      [
+    const testimonial = await prisma.testimonial.create({
+      data: {
         student_name,
         content,
-        photo_url || null,
-        program_id || null,
-        is_featured ?? false,
-        display_order ?? 0,
-        is_active ?? true,
-      ]
-    );
-    return res.status(201).json(rows[0]);
+        photo_url: photo_url || null,
+        program_id: program_id || null,
+        is_featured: is_featured ?? false,
+        display_order: display_order ?? 0,
+        is_active: is_active ?? true,
+      },
+    });
+    return res.status(201).json(testimonial);
   } catch (err) {
-    if (err.code === "23503") {
+    if (err.code === "P2003") {
       return res.status(400).json({ error: "program_id does not exist" });
     }
     console.error("POST /api/testimonials error:", err);
@@ -89,25 +82,24 @@ router.put("/:id", async (req, res) => {
     req.body;
 
   try {
-    const { rows } = await db.query(
-      `UPDATE testimonials
-          SET student_name  = COALESCE($1, student_name),
-              content       = COALESCE($2, content),
-              photo_url     = $3,
-              program_id    = $4,
-              is_featured   = COALESCE($5, is_featured),
-              display_order = COALESCE($6, display_order),
-              is_active     = COALESCE($7, is_active)
-        WHERE id = $8
-        RETURNING *`,
-      [student_name, content, photo_url, program_id, is_featured, display_order, is_active, req.params.id]
-    );
-    if (rows.length === 0) {
+    const testimonial = await prisma.testimonial.update({
+      where: { id: req.params.id },
+      data: {
+        student_name,
+        content,
+        photo_url,
+        program_id,
+        is_featured,
+        display_order,
+        is_active,
+      },
+    });
+    return res.json(testimonial);
+  } catch (err) {
+    if (err.code === "P2025") {
       return res.status(404).json({ error: "Testimonial not found" });
     }
-    return res.json(rows[0]);
-  } catch (err) {
-    if (err.code === "23503") {
+    if (err.code === "P2003") {
       return res.status(400).json({ error: "program_id does not exist" });
     }
     console.error("PUT /api/testimonials/:id error:", err);
@@ -118,15 +110,12 @@ router.put("/:id", async (req, res) => {
 // DELETE /api/testimonials/:id
 router.delete("/:id", async (req, res) => {
   try {
-    const { rowCount } = await db.query(
-      `DELETE FROM testimonials WHERE id = $1`,
-      [req.params.id]
-    );
-    if (rowCount === 0) {
-      return res.status(404).json({ error: "Testimonial not found" });
-    }
+    await prisma.testimonial.delete({ where: { id: req.params.id } });
     return res.status(204).end();
   } catch (err) {
+    if (err.code === "P2025") {
+      return res.status(404).json({ error: "Testimonial not found" });
+    }
     console.error("DELETE /api/testimonials/:id error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }

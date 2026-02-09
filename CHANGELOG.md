@@ -4,6 +4,77 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-02-09
+
+### 🔄 **Major Infrastructure Migration - Prisma ORM Integration**
+
+Complete migration from raw PostgreSQL queries to Prisma ORM for improved type safety, maintainability, and developer experience.
+
+#### **🏗️ Database Layer Modernization**
+- **Prisma Client Integration** - Replaced direct `pg` library usage with Prisma ORM
+  - Type-safe database operations with auto-generated TypeScript types
+  - Improved SQL injection protection through parameterized queries
+  - Better error handling and connection management
+  - Singleton pattern for database client instance
+- **Schema Definition** - Complete Prisma schema (`prisma/schema.prisma`) defining all 11 database models:
+  - `Program`, `ScheduleEntry`, `Instructor`, `GalleryImage`, `Announcement`
+  - `SiteContent`, `ContactInfo`, `Inquiry`, `Merchandise`, `Testimonial`, `AdminUser`
+  - Proper relationships, indexes, and constraints
+  - PostgreSQL-specific type mappings (`@db.Uuid`, `@db.Timestamptz`, `@db.Time`, etc.)
+
+#### **📊 Data Seeding & Migration**
+- **Prisma Seed System** (`prisma/seed.js`) - Comprehensive data seeding with all initial content:
+  - 6 martial arts programs with complete descriptions
+  - 37 site content entries (hero, about, methodology, etc.)
+  - 7 contact information entries (phone, WhatsApp, address, etc.)
+  - 32 schedule entries across all programs and time slots
+  - 2 placeholder gallery images for training and facilities
+  - Admin user creation with secure password hashing
+- **Migration Scripts** - Seamless transition from existing SQL-based setup
+
+#### **🔧 API Route Modernization**
+- **Complete Route Refactoring** - All 13 API route files updated to use Prisma:
+  - `adminUsers.js`, `announcements.js`, `auth.js`, `contactInfo.js`, `galleryImages.js`
+  - `inquiries.js`, `instructors.js`, `merchandise.js`, `programs.js`, `public.js`
+  - `scheduleEntries.js`, `siteContent.js`, `testimonials.js`
+- **Consistent CRUD Operations** - Standardized create, read, update, delete patterns
+- **Error Handling** - Improved error responses and validation
+
+#### **🛠️ Development Tools & Scripts**
+- **Prisma CLI Integration** - New npm scripts for database management:
+  - `prisma:generate` - Generate Prisma client
+  - `prisma:pull` - Pull database schema from existing database
+  - `prisma:migrate` - Run database migrations
+  - `prisma:studio` - Launch Prisma Studio GUI
+  - `prisma:seed` - Populate database with initial data
+- **Postinstall Automation** - Automatic Prisma client generation on dependency installation
+
+#### **🔧 Utility Enhancements**
+- **Time Formatting Utilities** (`server/utils/formatters.js`)
+  - `formatTime()` - Convert Prisma DateTime to "HH:MM:SS" strings
+  - `parseTime()` - Parse time strings for Prisma Time fields
+  - Proper UTC handling for database compatibility
+
+### 🔧 **Changed**
+- **Dependencies Updated**:
+  - Added `@prisma/client@^6.19.2` - Type-safe database client
+  - Added `prisma@^6.19.2` (dev) - Prisma CLI and studio
+  - Removed direct `pg` dependency (now handled by Prisma)
+- **Database Connection** - Migrated from `pg.Pool` to `PrismaClient` singleton
+- **Build Process** - Postinstall script now generates Prisma client automatically
+
+### 📦 **Database Schema Preservation**
+- **Zero Data Loss** - All existing table structures and data preserved
+- **Backward Compatibility** - Existing API contracts maintained
+- **Migration Path** - Smooth transition from SQL-based to ORM-based architecture
+
+### 🏗️ **Architecture Benefits**
+- **Type Safety** - Compile-time validation of database queries
+- **Developer Experience** - IntelliSense, auto-completion, and better debugging
+- **Maintainability** - Centralized schema definition and automated migrations
+- **Performance** - Optimized query generation and connection pooling
+- **Future-Proof** - Modern ORM foundation for scaling and feature development
+
 ## [0.2.1] - 2026-02-09
 
 ### ✨ **Added - Complete Image Management & Visual Enhancement System**

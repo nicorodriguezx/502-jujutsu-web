@@ -1,0 +1,205 @@
+// ---------------------------------------------------------------------------
+// 502 Jujutsu - Prisma Schema
+// PostgreSQL 15+
+// ---------------------------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// 1. programs
+// ---------------------------------------------------------------------------
+model Program {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name            String
+  slug            String   @unique
+  subtitle        String?
+  description     String
+  image_url       String?
+  age_range_min   Int?
+  age_range_max   Int?
+  target_audience String
+  display_order   Int      @default(0)
+  is_active       Boolean  @default(true)
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  updated_at      DateTime @default(now()) @db.Timestamptz(6)
+
+  schedule_entries ScheduleEntry[]
+  testimonials     Testimonial[]
+
+  @@map("programs")
+}
+
+// ---------------------------------------------------------------------------
+// 2. schedule_entries
+// ---------------------------------------------------------------------------
+model ScheduleEntry {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  program_id  String   @db.Uuid
+  day_of_week Int      @db.SmallInt
+  start_time  DateTime @db.Time(6)
+  end_time    DateTime @db.Time(6)
+  description String?
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime @default(now()) @db.Timestamptz(6)
+
+  program Program @relation(fields: [program_id], references: [id], onDelete: Cascade)
+
+  @@index([program_id])
+  @@index([day_of_week])
+  @@map("schedule_entries")
+}
+
+// ---------------------------------------------------------------------------
+// 3. instructors
+// ---------------------------------------------------------------------------
+model Instructor {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  full_name     String
+  bio           String?
+  photo_url     String?
+  display_order Int      @default(0)
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("instructors")
+}
+
+// ---------------------------------------------------------------------------
+// 4. gallery_images
+// ---------------------------------------------------------------------------
+model GalleryImage {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  url           String
+  alt_text      String
+  caption       String?
+  category      String
+  display_order Int      @default(0)
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([category])
+  @@map("gallery_images")
+}
+
+// ---------------------------------------------------------------------------
+// 5. announcements
+// ---------------------------------------------------------------------------
+model Announcement {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String
+  body         String
+  published_at DateTime? @db.Timestamptz(6)
+  is_active    Boolean   @default(true)
+  created_at   DateTime  @default(now()) @db.Timestamptz(6)
+  updated_at   DateTime  @default(now()) @db.Timestamptz(6)
+
+  @@map("announcements")
+}
+
+// ---------------------------------------------------------------------------
+// 6. site_content
+// ---------------------------------------------------------------------------
+model SiteContent {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  section_key  String   @unique
+  content_text String
+  updated_at   DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("site_content")
+}
+
+// ---------------------------------------------------------------------------
+// 7. contact_info
+// ---------------------------------------------------------------------------
+model ContactInfo {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  info_key   String   @unique
+  info_value String
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("contact_info")
+}
+
+// ---------------------------------------------------------------------------
+// 8. inquiries
+// ---------------------------------------------------------------------------
+model Inquiry {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  full_name  String
+  phone      String?
+  email      String?
+  message    String?
+  source     String   @default("whatsapp")
+  status     String   @default("new")
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([created_at(sort: Desc)])
+  @@map("inquiries")
+}
+
+// ---------------------------------------------------------------------------
+// 9. merchandise
+// ---------------------------------------------------------------------------
+model Merchandise {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name          String
+  slug          String   @unique
+  description   String?
+  price         Decimal? @db.Decimal(10, 2)
+  image_url     String?
+  category      String   @default("general")
+  is_available  Boolean  @default(true)
+  display_order Int      @default(0)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([category])
+  @@map("merchandise")
+}
+
+// ---------------------------------------------------------------------------
+// 10. testimonials
+// ---------------------------------------------------------------------------
+model Testimonial {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  student_name  String
+  content       String
+  photo_url     String?
+  program_id    String?  @db.Uuid
+  is_featured   Boolean  @default(false)
+  display_order Int      @default(0)
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  program Program? @relation(fields: [program_id], references: [id], onDelete: SetNull)
+
+  @@map("testimonials")
+}
+
+// ---------------------------------------------------------------------------
+// 11. admin_users
+// ---------------------------------------------------------------------------
+model AdminUser {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String   @unique
+  password_hash String
+  full_name     String
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  updated_at    DateTime @default(now()) @db.Timestamptz(6)
+
+  @@map("admin_users")
+}

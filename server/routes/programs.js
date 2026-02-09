@@ -2,21 +2,17 @@
 // CRUD: programs
 // ---------------------------------------------------------------------------
 const { Router } = require("express");
-const db = require("../db");
+const prisma = require("../db");
 
 const router = Router();
 
-// GET /api/programs -- list all active programs, ordered by display_order
+// GET /api/programs -- list all programs, ordered by display_order
 router.get("/", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT id, name, slug, subtitle, description, image_url,
-              age_range_min, age_range_max, target_audience,
-              display_order, is_active, created_at, updated_at
-         FROM programs
-        ORDER BY display_order ASC`
-    );
-    return res.json(rows);
+    const programs = await prisma.program.findMany({
+      orderBy: { display_order: "asc" },
+    });
+    return res.json(programs);
   } catch (err) {
     console.error("GET /api/programs error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -26,18 +22,13 @@ router.get("/", async (_req, res) => {
 // GET /api/programs/:id -- get one program by id
 router.get("/:id", async (req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT id, name, slug, subtitle, description, image_url,
-              age_range_min, age_range_max, target_audience,
-              display_order, is_active, created_at, updated_at
-         FROM programs
-        WHERE id = $1`,
-      [req.params.id]
-    );
-    if (rows.length === 0) {
+    const program = await prisma.program.findUnique({
+      where: { id: req.params.id },
+    });
+    if (!program) {
       return res.status(404).json({ error: "Program not found" });
     }
-    return res.json(rows[0]);
+    return res.json(program);
   } catch (err) {
     console.error("GET /api/programs/:id error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -66,28 +57,23 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const { rows } = await db.query(
-      `INSERT INTO programs
-              (name, slug, subtitle, description, image_url, age_range_min, age_range_max,
-               target_audience, display_order, is_active)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-       RETURNING *`,
-      [
+    const program = await prisma.program.create({
+      data: {
         name,
         slug,
-        subtitle || null,
+        subtitle: subtitle || null,
         description,
-        image_url || null,
-        age_range_min ?? null,
-        age_range_max ?? null,
+        image_url: image_url || null,
+        age_range_min: age_range_min ?? null,
+        age_range_max: age_range_max ?? null,
         target_audience,
-        display_order ?? 0,
-        is_active ?? true,
-      ]
-    );
-    return res.status(201).json(rows[0]);
+        display_order: display_order ?? 0,
+        is_active: is_active ?? true,
+      },
+    });
+    return res.status(201).json(program);
   } catch (err) {
-    if (err.code === "23505") {
+    if (err.code === "P2002") {
       return res.status(409).json({ error: "slug already exists" });
     }
     console.error("POST /api/programs error:", err);
@@ -111,40 +97,27 @@ router.put("/:id", async (req, res) => {
   } = req.body;
 
   try {
-    const { rows } = await db.query(
-      `UPDATE programs
-          SET name            = COALESCE($1, name),
-              slug            = COALESCE($2, slug),
-              subtitle        = $3,
-              description     = COALESCE($4, description),
-              image_url       = $5,
-              age_range_min   = $6,
-              age_range_max   = $7,
-              target_audience = COALESCE($8, target_audience),
-              display_order   = COALESCE($9, display_order),
-              is_active       = COALESCE($10, is_active)
-        WHERE id = $11
-        RETURNING *`,
-      [
+    const program = await prisma.program.update({
+      where: { id: req.params.id },
+      data: {
         name,
         slug,
         subtitle,
         description,
         image_url,
-        age_range_min ?? null,
-        age_range_max ?? null,
+        age_range_min,
+        age_range_max,
         target_audience,
         display_order,
         is_active,
-        req.params.id,
-      ]
-    );
-    if (rows.length === 0) {
+      },
+    });
+    return res.json(program);
+  } catch (err) {
+    if (err.code === "P2025") {
       return res.status(404).json({ error: "Program not found" });
     }
-    return res.json(rows[0]);
-  } catch (err) {
-    if (err.code === "23505") {
+    if (err.code === "P2002") {
       return res.status(409).json({ error: "slug already exists" });
     }
     console.error("PUT /api/programs/:id error:", err);
@@ -155,15 +128,12 @@ router.put("/:id", async (req, res) => {
 // DELETE /api/programs/:id -- delete a program (cascades to schedule_entries)
 router.delete("/:id", async (req, res) => {
   try {
-    const { rowCount } = await db.query(
-      `DELETE FROM programs WHERE id = $1`,
-      [req.params.id]
-    );
-    if (rowCount === 0) {
-      return res.status(404).json({ error: "Program not found" });
-    }
+    await prisma.program.delete({ where: { id: req.params.id } });
     return res.status(204).end();
   } catch (err) {
+    if (err.code === "P2025") {
+      return res.status(404).json({ error: "Program not found" });
+    }
     console.error("DELETE /api/programs/:id error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }

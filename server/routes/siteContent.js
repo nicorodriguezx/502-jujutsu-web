@@ -5,19 +5,17 @@
 // Admin creates/updates entries by key.
 // ---------------------------------------------------------------------------
 const { Router } = require("express");
-const db = require("../db");
+const prisma = require("../db");
 
 const router = Router();
 
 // GET /api/site-content -- list all content entries
 router.get("/", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT id, section_key, content_text, updated_at
-         FROM site_content
-        ORDER BY section_key ASC`
-    );
-    return res.json(rows);
+    const entries = await prisma.siteContent.findMany({
+      orderBy: { section_key: "asc" },
+    });
+    return res.json(entries);
   } catch (err) {
     console.error("GET /api/site-content error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -27,16 +25,13 @@ router.get("/", async (_req, res) => {
 // GET /api/site-content/:key -- get one entry by section_key
 router.get("/:key", async (req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT id, section_key, content_text, updated_at
-         FROM site_content
-        WHERE section_key = $1`,
-      [req.params.key]
-    );
-    if (rows.length === 0) {
+    const entry = await prisma.siteContent.findUnique({
+      where: { section_key: req.params.key },
+    });
+    if (!entry) {
       return res.status(404).json({ error: "Content key not found" });
     }
-    return res.json(rows[0]);
+    return res.json(entry);
   } catch (err) {
     console.error("GET /api/site-content/:key error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -52,15 +47,12 @@ router.put("/:key", async (req, res) => {
   }
 
   try {
-    const { rows } = await db.query(
-      `INSERT INTO site_content (section_key, content_text)
-       VALUES ($1, $2)
-       ON CONFLICT (section_key) DO UPDATE
-          SET content_text = EXCLUDED.content_text
-       RETURNING *`,
-      [req.params.key, content_text]
-    );
-    return res.json(rows[0]);
+    const entry = await prisma.siteContent.upsert({
+      where: { section_key: req.params.key },
+      update: { content_text },
+      create: { section_key: req.params.key, content_text },
+    });
+    return res.json(entry);
   } catch (err) {
     console.error("PUT /api/site-content/:key error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -70,15 +62,14 @@ router.put("/:key", async (req, res) => {
 // DELETE /api/site-content/:key -- remove a content entry
 router.delete("/:key", async (req, res) => {
   try {
-    const { rowCount } = await db.query(
-      `DELETE FROM site_content WHERE section_key = $1`,
-      [req.params.key]
-    );
-    if (rowCount === 0) {
-      return res.status(404).json({ error: "Content key not found" });
-    }
+    await prisma.siteContent.delete({
+      where: { section_key: req.params.key },
+    });
     return res.status(204).end();
   } catch (err) {
+    if (err.code === "P2025") {
+      return res.status(404).json({ error: "Content key not found" });
+    }
     console.error("DELETE /api/site-content/:key error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }

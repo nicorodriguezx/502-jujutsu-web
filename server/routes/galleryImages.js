@@ -2,7 +2,7 @@
 // CRUD: gallery_images
 // ---------------------------------------------------------------------------
 const { Router } = require("express");
-const db = require("../db");
+const prisma = require("../db");
 
 const router = Router();
 
@@ -10,20 +10,13 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const { category } = req.query;
-    let query = `SELECT id, url, alt_text, caption, category,
-                        display_order, is_active, created_at, updated_at
-                   FROM gallery_images`;
-    const params = [];
+    const where = category ? { category } : {};
 
-    if (category) {
-      query += ` WHERE category = $1`;
-      params.push(category);
-    }
-
-    query += ` ORDER BY display_order ASC`;
-
-    const { rows } = await db.query(query, params);
-    return res.json(rows);
+    const images = await prisma.galleryImage.findMany({
+      where,
+      orderBy: { display_order: "asc" },
+    });
+    return res.json(images);
   } catch (err) {
     console.error("GET /api/gallery-images error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -33,17 +26,13 @@ router.get("/", async (req, res) => {
 // GET /api/gallery-images/:id
 router.get("/:id", async (req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT id, url, alt_text, caption, category,
-              display_order, is_active, created_at, updated_at
-         FROM gallery_images
-        WHERE id = $1`,
-      [req.params.id]
-    );
-    if (rows.length === 0) {
+    const image = await prisma.galleryImage.findUnique({
+      where: { id: req.params.id },
+    });
+    if (!image) {
       return res.status(404).json({ error: "Gallery image not found" });
     }
-    return res.json(rows[0]);
+    return res.json(image);
   } catch (err) {
     console.error("GET /api/gallery-images/:id error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -61,13 +50,17 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const { rows } = await db.query(
-      `INSERT INTO gallery_images (url, alt_text, caption, category, display_order, is_active)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
-      [url, alt_text, caption || null, category, display_order ?? 0, is_active ?? true]
-    );
-    return res.status(201).json(rows[0]);
+    const image = await prisma.galleryImage.create({
+      data: {
+        url,
+        alt_text,
+        caption: caption || null,
+        category,
+        display_order: display_order ?? 0,
+        is_active: is_active ?? true,
+      },
+    });
+    return res.status(201).json(image);
   } catch (err) {
     console.error("POST /api/gallery-images error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -79,23 +72,22 @@ router.put("/:id", async (req, res) => {
   const { url, alt_text, caption, category, display_order, is_active } = req.body;
 
   try {
-    const { rows } = await db.query(
-      `UPDATE gallery_images
-          SET url           = COALESCE($1, url),
-              alt_text      = COALESCE($2, alt_text),
-              caption       = $3,
-              category      = COALESCE($4, category),
-              display_order = COALESCE($5, display_order),
-              is_active     = COALESCE($6, is_active)
-        WHERE id = $7
-        RETURNING *`,
-      [url, alt_text, caption, category, display_order, is_active, req.params.id]
-    );
-    if (rows.length === 0) {
+    const image = await prisma.galleryImage.update({
+      where: { id: req.params.id },
+      data: {
+        url,
+        alt_text,
+        caption,
+        category,
+        display_order,
+        is_active,
+      },
+    });
+    return res.json(image);
+  } catch (err) {
+    if (err.code === "P2025") {
       return res.status(404).json({ error: "Gallery image not found" });
     }
-    return res.json(rows[0]);
-  } catch (err) {
     console.error("PUT /api/gallery-images/:id error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }
@@ -104,15 +96,12 @@ router.put("/:id", async (req, res) => {
 // DELETE /api/gallery-images/:id
 router.delete("/:id", async (req, res) => {
   try {
-    const { rowCount } = await db.query(
-      `DELETE FROM gallery_images WHERE id = $1`,
-      [req.params.id]
-    );
-    if (rowCount === 0) {
-      return res.status(404).json({ error: "Gallery image not found" });
-    }
+    await prisma.galleryImage.delete({ where: { id: req.params.id } });
     return res.status(204).end();
   } catch (err) {
+    if (err.code === "P2025") {
+      return res.status(404).json({ error: "Gallery image not found" });
+    }
     console.error("DELETE /api/gallery-images/:id error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }

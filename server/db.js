@@ -1,16 +1,8 @@
 // ---------------------------------------------------------------------------
-// PostgreSQL connection pool
+// Prisma client singleton
 // ---------------------------------------------------------------------------
-const { Pool } = require("pg");
+const { PrismaClient } = require("@prisma/client");
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+const prisma = new PrismaClient();
 
-// Log connection errors instead of crashing silently
-pool.on("error", (err) => {
-  console.error("Unexpected error on idle PostgreSQL client:", err);
-  process.exit(1);
-});
-
-module.exports = pool;
+module.exports = prisma;

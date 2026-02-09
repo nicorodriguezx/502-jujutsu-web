@@ -2,22 +2,38 @@
 // CRUD: schedule_entries
 // ---------------------------------------------------------------------------
 const { Router } = require("express");
-const db = require("../db");
+const prisma = require("../db");
+const { formatTime, parseTime } = require("../utils/formatters");
 
 const router = Router();
+
+/** Flatten Prisma's nested program relation and format time fields */
+function formatEntry({ program, ...rest }) {
+  return {
+    ...rest,
+    program_name: program?.name ?? null,
+    start_time: formatTime(rest.start_time),
+    end_time: formatTime(rest.end_time),
+  };
+}
+
+/** Format time fields on a plain entry (no program join) */
+function formatEntryTimes(entry) {
+  return {
+    ...entry,
+    start_time: formatTime(entry.start_time),
+    end_time: formatTime(entry.end_time),
+  };
+}
 
 // GET /api/schedule-entries -- list all, joined with program name
 router.get("/", async (_req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT se.id, se.program_id, p.name AS program_name,
-              se.day_of_week, se.start_time, se.end_time,
-              se.description, se.is_active, se.created_at, se.updated_at
-         FROM schedule_entries se
-         JOIN programs p ON p.id = se.program_id
-        ORDER BY se.day_of_week ASC, se.start_time ASC`
-    );
-    return res.json(rows);
+    const entries = await prisma.scheduleEntry.findMany({
+      include: { program: { select: { name: true } } },
+      orderBy: [{ day_of_week: "asc" }, { start_time: "asc" }],
+    });
+    return res.json(entries.map(formatEntry));
   } catch (err) {
     console.error("GET /api/schedule-entries error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -27,19 +43,14 @@ router.get("/", async (_req, res) => {
 // GET /api/schedule-entries/:id -- get one by id
 router.get("/:id", async (req, res) => {
   try {
-    const { rows } = await db.query(
-      `SELECT se.id, se.program_id, p.name AS program_name,
-              se.day_of_week, se.start_time, se.end_time,
-              se.description, se.is_active, se.created_at, se.updated_at
-         FROM schedule_entries se
-         JOIN programs p ON p.id = se.program_id
-        WHERE se.id = $1`,
-      [req.params.id]
-    );
-    if (rows.length === 0) {
+    const entry = await prisma.scheduleEntry.findUnique({
+      where: { id: req.params.id },
+      include: { program: { select: { name: true } } },
+    });
+    if (!entry) {
       return res.status(404).json({ error: "Schedule entry not found" });
     }
-    return res.json(rows[0]);
+    return res.json(formatEntry(entry));
   } catch (err) {
     console.error("GET /api/schedule-entries/:id error:", err);
     return res.status(500).json({ error: "Internal server error" });
@@ -58,23 +69,19 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const { rows } = await db.query(
-      `INSERT INTO schedule_entries
-              (program_id, day_of_week, start_time, end_time, description, is_active)
-       VALUES ($1, $2, $3, $4, $5, $6)
-       RETURNING *`,
-      [
+    const entry = await prisma.scheduleEntry.create({
+      data: {
         program_id,
         day_of_week,
-        start_time,
-        end_time,
-        description || null,
-        is_active ?? true,
-      ]
-    );
-    return res.status(201).json(rows[0]);
+        start_time: parseTime(start_time),
+        end_time: parseTime(end_time),
+        description: description || null,
+        is_active: is_active ?? true,
+      },
+    });
+    return res.status(201).json(formatEntryTimes(entry));
   } catch (err) {
-    if (err.code === "23503") {
+    if (err.code === "P2003") {
       return res.status(400).json({ error: "program_id does not exist" });
     }
     console.error("POST /api/schedule-entries error:", err);
@@ -88,32 +95,23 @@ router.put("/:id", async (req, res) => {
     req.body;
 
   try {
-    const { rows } = await db.query(
-      `UPDATE schedule_entries
-          SET program_id  = COALESCE($1, program_id),
-              day_of_week = COALESCE($2, day_of_week),
-              start_time  = COALESCE($3, start_time),
-              end_time    = COALESCE($4, end_time),
-              description = $5,
-              is_active   = COALESCE($6, is_active)
-        WHERE id = $7
-        RETURNING *`,
-      [
+    const entry = await prisma.scheduleEntry.update({
+      where: { id: req.params.id },
+      data: {
         program_id,
         day_of_week,
-        start_time,
-        end_time,
+        start_time: parseTime(start_time),
+        end_time: parseTime(end_time),
         description,
         is_active,
-        req.params.id,
-      ]
-    );
-    if (rows.length === 0) {
+      },
+    });
+    return res.json(formatEntryTimes(entry));
+  } catch (err) {
+    if (err.code === "P2025") {
       return res.status(404).json({ error: "Schedule entry not found" });
     }
-    return res.json(rows[0]);
-  } catch (err) {
-    if (err.code === "23503") {
+    if (err.code === "P2003") {
       return res.status(400).json({ error: "program_id does not exist" });
     }
     console.error("PUT /api/schedule-entries/:id error:", err);
@@ -124,15 +122,12 @@ router.put("/:id", async (req, res) => {
 // DELETE /api/schedule-entries/:id -- delete a schedule entry
 router.delete("/:id", async (req, res) => {
   try {
-    const { rowCount } = await db.query(
-      `DELETE FROM schedule_entries WHERE id = $1`,
-      [req.params.id]
-    );
-    if (rowCount === 0) {
-      return res.status(404).json({ error: "Schedule entry not found" });
-    }
+    await prisma.scheduleEntry.delete({ where: { id: req.params.id } });
     return res.status(204).end();
   } catch (err) {
+    if (err.code === "P2025") {
+      return res.status(404).json({ error: "Schedule entry not found" });
+    }
     console.error("DELETE /api/schedule-entries/:id error:", err);
     return res.status(500).json({ error: "Internal server error" });
   }

@@ -2,11 +2,9 @@
 
 require('dotenv').config();
 const bcrypt = require('bcrypt');
-const { Pool } = require('pg');
+const { PrismaClient } = require('@prisma/client');
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+const prisma = new PrismaClient();
 
 async function createAdmin() {
   const email = 'admin@example.com';
@@ -18,27 +16,32 @@ async function createAdmin() {
     const saltRounds = 12;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // Insert admin user
-    const result = await pool.query(
-      `INSERT INTO admin_users (email, password_hash, full_name, is_active)
-       VALUES ($1, $2, $3, true)
-       ON CONFLICT (email) DO NOTHING
-       RETURNING id, email, full_name`,
-      [email, passwordHash, fullName]
-    );
+    // Check if admin already exists
+    const existing = await prisma.adminUser.findUnique({ where: { email } });
 
-    if (result.rows.length > 0) {
+    if (existing) {
+      console.log('ℹ️ Admin user already exists');
+    } else {
+      const user = await prisma.adminUser.create({
+        data: {
+          email,
+          password_hash: passwordHash,
+          full_name: fullName,
+          is_active: true,
+        },
+        select: { id: true, email: true, full_name: true },
+      });
+
       console.log('✅ Admin user created successfully!');
       console.log(`📧 Email: ${email}`);
       console.log(`🔑 Password: ${password}`);
       console.log('🔐 Password is hashed with bcrypt');
-    } else {
-      console.log('ℹ️ Admin user already exists');
     }
 
-    await pool.end();
+    await prisma.$disconnect();
   } catch (error) {
     console.error('❌ Error creating admin user:', error.message);
+    await prisma.$disconnect();
     process.exit(1);
   }
 }
