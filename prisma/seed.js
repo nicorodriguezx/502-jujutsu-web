@@ -122,19 +122,35 @@ async function main() {
     ["hero_background_overlay_opacity", "0.6"],
     ["hero_image_transition_interval", "5000"],
 
-    // About
+    // Quiénes Somos
+    ["quienes_somos_headline", "Quiénes Somos"],
+    ["quienes_somos_description", "502 Jūjutsu está formado por un grupo de amigos que llevamos entre 13 y 25 años cada uno entrenando bajo la Metodología Valente Brothers\u2122, la cual fue desarrollada a partir de lo que el GM Helio Gracie enseñó a 3 generaciones de la familia Valente. Los hermanos Valente han estado muy presentes, ayudando al desarrollo del Jūjutsu en Guatemala. 502 Jūjutsu nació con el objetivo de continuar con el sistema Valente Brothers, un sistema que sigue el Jūjutsu de Helio Gracie, enfocado 100% en defensa personal; y con el Código 753\u2122, una filosofía de vida desarrollada por Valente Brothers como un enfoque para una vida equilibrada física, espiritual, emocional y mentalmente, que nos prepara para portar el \"arma invisible\" que es el Jūjutsu.\n\n502 nos identifica con nuestras raíces y apela a nuestro interés por ayudar a la comunidad guatemalteca. Jūjutsu corresponde a la transliteración correcta de la palabra japonesa 柔術, cuya romanización inicial por razones fonéticas se hizo equivocadamente como \"jiu-jitsu\" y al día de hoy sigue siendo la manera utilizada para referirse a dicho arte marcial.\n\nPocos profesores de Jūjutsu de esta generación tuvieron el contacto que los hermanos Valente tuvieron con Helio Gracie desde muy pequeños, motivo por el cual nos sentimos afortunados y orgullosos de ser parte de Valente Brothers."],
+    ["quienes_somos_team_photo_url", ""],
+    ["quienes_somos_mision_headline", "Nuestra Misión"],
+    ["quienes_somos_mision", "Nuestra misión es desarrollar en los alumnos confianza en sus capacidades físicas y lograr bienestar por medio de la enseñanza de un completo y eficiente arte marcial de defensa personal, dentro de un entorno seguro, limpio y respetuoso. Estamos comprometidos a preservar las raíces del Jūjutsu, tanto técnicas como filosóficas, tal y como nos han enseñado los hermanos Valente."],
+    ["quienes_somos_proposito_headline", "Nuestro Propósito"],
+    ["quienes_somos_proposito", "Inspirados en tanto que admiramos y valoramos de Valente Brothers HQ en Miami, tratamos de que 502 Jūjutsu sea una academia con instalaciones de primer nivel, instructores altamente calificados y trato personalizado. Queremos que nuestros alumnos se sientan en un ambiente familiar y amigable, atendidos por instructores amables y dedicados.\n\nEn 502 Jūjutsu nos esforzamos por crear una atmosfera segura, enriquecedora y positiva, donde todo estudiante, sin importar su edad, género o atributos físicos, aumentará no solo su habilidad o destreza para defenderse ante cualquier situación, sino también mejorará su enfoque, auto-confianza, disciplina, así como su capacidad física, mental y espiritual."],
+
+    // About (legacy keys kept for backward compatibility)
     ["about_history", "Fundada por amigos con 15 a 25 años cada uno entrenando bajo la metodología Hermanos Valente, desarrollada a partir de las enseñanzas de Helio Gracie transmitidas a través de 3 generaciones de la familia Valente. Raíces guatemaltecas fuertes con enfoque comunitario."],
     ["about_authenticity", 'Utiliza la transliteración correcta 柔術 (Jūjutsu) en lugar del fonético "jiu-jitsu", preservando el arte marcial tradicional japonés.'],
     ["about_mission", "Instalaciones de clase mundial, instructores altamente calificados y atención personalizada. Ambiente familiar con instructores dedicados y amigables comprometidos a preservar las raíces del Jūjutsu tal como lo enseñan los Hermanos Valente."],
     ["about_student_goals", "Construir confianza física y bienestar a través de un arte marcial de defensa personal completo y eficiente en un ambiente seguro, limpio y respetuoso. Mejorar habilidades de defensa personal, enfoque, confianza, disciplina y capacidades físicas, mentales y espirituales sin importar edad, género o atributos físicos."],
 
     // Código 753
-    ["codigo_753_intro", "Filosofía de vida completa enseñada a todos los estudiantes."],
+    ["codigo_753_intro", "La filosofía está resumida en el Código 753, el cual se enseña a todos los alumnos (niños, adolescentes y adultos). Dicho código representa la filosofía de vida de la Metodología Valente Brothers\u2122. El ser humano está formado por espíritu, cuerpo y mente. El nombre del Código (7-5-3) representa cada uno de estos 3 componentes."],
     ["codigo_753_spiritual", "Rectitud, Coraje, Benevolencia, Respeto, Honestidad, Honor, Lealtad"],
     ["codigo_753_physical", "Ejercicio, Nutrición, Descanso, Higiene, Positivismo"],
     ["codigo_753_mental", "Conciencia, Balance emocional, Adaptabilidad"],
+    ["codigo_753_spiritual_label", "Espiritual"],
+    ["codigo_753_physical_label", "Físico"],
+    ["codigo_753_mental_label", "Mental"],
+    ["codigo_753_spiritual_description", 'El "7" representa la parte Espiritual. Enumera las virtudes de los antiguos guerreros Samurai.'],
+    ["codigo_753_physical_description", 'El "5" representa la parte física o corporal. Enumera los elementos para tener una vida sana.'],
+    ["codigo_753_mental_description", 'El "3" representa la parte mental. Enumera los estados de la mente.'],
 
     // Methodology
+    ["methodology_headline", "Metodología Valente Brothers\u2122"],
     ["methodology", "Todos los programas siguen Helio Gracie Jūjutsu con el sistema Hermanos Valente cubriendo ataques sorpresa, golpes traumáticos, lucha de pie, proyecciones, lucha en el suelo y filosofía. Las técnicas se convierten en memoria muscular a través de repetición constante para aplicación automática."],
 
     // Programs section

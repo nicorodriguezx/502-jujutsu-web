@@ -20,7 +20,9 @@ import {
   Phone,
   MapPin,
   Instagram,
-  ExternalLink
+  ExternalLink,
+  BookOpen,
+  Eye
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -272,7 +274,7 @@ export default function HomePage() {
 
           {/* Scroll indicator */}
           <div className="mt-16 animate-bounce">
-            <a href="#programas" aria-label="Scroll down">
+            <a href="#metodologia" aria-label="Scroll down">
               <ChevronDown size={28} className="text-white/50 mx-auto" />
             </a>
           </div>
@@ -280,9 +282,148 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
+      {/* METODOLOGÍA & CÓDIGO 753 SECTION                                 */}
+      {/* ================================================================= */}
+      <section id="metodologia" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-[#003366]/10 text-[#003366] rounded-full px-4 py-1.5 mb-4">
+              <BookOpen className="w-4 h-4" />
+              <span className="text-sm font-medium uppercase tracking-wider">
+                Nuestro Sistema
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              {content.methodology_headline || "Metodología Valente Brothers™"}
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              {content.methodology ||
+                "Todos los programas siguen Helio Gracie Jūjutsu con el sistema Hermanos Valente cubriendo ataques sorpresa, golpes traumáticos, lucha de pie, proyecciones, lucha en el suelo y filosofía. Las técnicas se convierten en memoria muscular a través de repetición constante para aplicación automática."}
+            </p>
+          </div>
+
+          {/* Código 753 Brief */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="px-8 py-8 text-center">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="flex items-center gap-1">
+                  <span className="w-10 h-10 bg-gradient-to-br from-[#003366] to-[#0D47A1] rounded-full flex items-center justify-center text-lg font-bold text-white shadow">7</span>
+                  <span className="w-10 h-10 bg-gradient-to-br from-[#003366] to-[#0D47A1] rounded-full flex items-center justify-center text-lg font-bold text-white shadow">5</span>
+                  <span className="w-10 h-10 bg-gradient-to-br from-[#003366] to-[#0D47A1] rounded-full flex items-center justify-center text-lg font-bold text-white shadow">3</span>
+                </div>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                Código 753™
+              </h3>
+              <p className="text-gray-600 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+                {content.codigo_753_brief ||
+                  "La metodología se complementa con el Código 753™, una filosofía de vida que integra lo espiritual (7), lo físico (5) y lo mental (3), enseñada a todos los alumnos sin importar su edad."}
+              </p>
+              <a
+                href="#filosofia"
+                className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-[#003366] hover:text-[#0D47A1] transition-colors"
+              >
+                Conocer más sobre el Código 753
+                <ChevronRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================= */}
+      {/* QUIÉNES SOMOS SECTION                                            */}
+      {/* ================================================================= */}
+      <section id="quienes-somos" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-[#003366]/10 text-[#003366] rounded-full px-4 py-1.5 mb-4">
+              <Users className="w-4 h-4" />
+              <span className="text-sm font-medium uppercase tracking-wider">
+                Nuestra Academia
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              {content.quienes_somos_headline || "Quiénes Somos"}
+            </h2>
+          </div>
+
+          {/* About Content with optional team photo */}
+          <div className={`grid gap-12 items-start mb-16 ${content.quienes_somos_team_photo_url ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1 max-w-4xl mx-auto'}`}>
+            {/* Team Photo */}
+            {content.quienes_somos_team_photo_url && (
+              <div className="relative rounded-xl overflow-hidden shadow-lg">
+                <img
+                  src={content.quienes_somos_team_photo_url}
+                  alt="Equipo 502 Jūjutsu"
+                  className="w-full h-auto object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+              </div>
+            )}
+
+            {/* About Text */}
+            <div>
+              <div className="prose prose-lg max-w-none">
+                {(content.quienes_somos_description || "502 Jūjutsu está formado por un grupo de amigos que llevamos entre 13 y 25 años cada uno entrenando bajo la Metodología Valente Brothers™, la cual fue desarrollada a partir de lo que el GM Helio Gracie enseñó a 3 generaciones de la familia Valente.").split('\n\n').map((paragraph, i) => (
+                  <p key={i} className="text-gray-600 leading-relaxed mb-4">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Mission */}
+          <div className="bg-gradient-to-br from-[#003366] to-[#0D47A1] rounded-2xl p-8 sm:p-12 text-white mb-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
+                  <Target className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold">
+                  {content.quienes_somos_mision_headline || "Nuestra Misión"}
+                </h3>
+              </div>
+              <div className="space-y-4">
+                {(content.quienes_somos_mision || "Nuestra misión es desarrollar en los alumnos confianza en sus capacidades físicas y lograr bienestar por medio de la enseñanza de un completo y eficiente arte marcial de defensa personal, dentro de un entorno seguro, limpio y respetuoso.").split('\n\n').map((paragraph, i) => (
+                  <p key={i} className="text-blue-100 leading-relaxed text-base sm:text-lg">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Purpose */}
+          <div className="bg-white border border-gray-200 rounded-2xl p-8 sm:p-12 shadow-lg">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-[#003366]/10 rounded-lg flex items-center justify-center">
+                  <Eye className="w-6 h-6 text-[#003366]" />
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                  {content.quienes_somos_proposito_headline || "Nuestro Propósito"}
+                </h3>
+              </div>
+              <div className="space-y-4">
+                {(content.quienes_somos_proposito || "Inspirados en tanto que admiramos y valoramos de Valente Brothers HQ en Miami, tratamos de que 502 Jūjutsu sea una academia con instalaciones de primer nivel, instructores altamente calificados y trato personalizado.").split('\n\n').map((paragraph, i) => (
+                  <p key={i} className="text-gray-600 leading-relaxed text-base sm:text-lg">
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================= */}
       {/* PROGRAMAS SECTION                                                */}
       {/* ================================================================= */}
-      <section id="programas" className="py-20 bg-white relative">
+      <section id="programas" className="py-20 bg-gray-50 relative">
         {/* Optional background image overlay */}
         {content.programas_background_style === 'image' && (
           <div className="absolute inset-0 opacity-5">
@@ -308,7 +449,7 @@ export default function HomePage() {
           </div>
 
           {/* Programs Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {programs.map((program) => {
               const IconComponent = programIcons[program.slug] || Users;
               return (
@@ -354,47 +495,161 @@ export default function HomePage() {
               );
             })}
           </div>
+        </div>
+      </section>
 
-          {/* Methodology Section */}
-          <div className="bg-gray-50 rounded-xl p-8">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Metodología Hermanos Valente
-              </h3>
-              <p className="text-gray-600">
-                {content.methodology ||
-                  "Todos los programas siguen Helio Gracie Jūjutsu con el sistema Hermanos Valente cubriendo ataques sorpresa, golpes traumáticos, lucha de pie, proyecciones, lucha en el suelo y filosofía. Las técnicas se convierten en memoria muscular a través de repetición constante para aplicación automática."}
-              </p>
+      {/* ================================================================= */}
+      {/* MODALIDAD SECTION                                               */}
+      {/* ================================================================= */}
+      <section id="modalidad" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 bg-[#003366]/10 text-[#003366] rounded-full px-4 py-1.5 mb-4">
+              <Users className="w-4 h-4" />
+              <span className="text-sm font-medium uppercase tracking-wider">
+                Modalidad de Entrenamiento
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              {content.modalidad_headline || "¿Cómo Entrenamos?"}
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              {content.modalidad_description ||
+                "Ofrecemos dos modalidades de entrenamiento diseñadas para adaptarse a tus necesidades y objetivos personales."}
+            </p>
+          </div>
+
+          {/* Modalities Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+            {/* Group Classes */}
+            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="bg-[#003366] px-6 py-5 flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-white">
+                  {content.modalidad_grupal_title || "Clases Grupales"}
+                </h3>
+              </div>
+              <div className="p-6 sm:p-8">
+                <div className="space-y-4">
+                  {(content.modalidad_grupal_description || "Las clases grupales siguen un plan de estudios estructurado dentro de la Metodología Valente Brothers™. Cada sesión combina calentamiento, técnica, práctica guiada y repetición, en un ambiente de respeto y camaradería.\n\nEs la forma principal de entrenamiento en la academia, ideal para desarrollar habilidades técnicas y crear comunidad con otros practicantes.").split('\n\n').map((paragraph, i) => (
+                    <p key={i} className="text-gray-600 leading-relaxed">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            {/* Código 753 */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-[#003366] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-bold text-white">7</span>
+            {/* Private Classes */}
+            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow">
+              <div className="bg-[#003366] px-6 py-5 flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-white" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Espiritual</h4>
-                <p className="text-sm text-gray-600">
-                  Rectitud, Coraje, Benevolencia, Respeto, Honestidad, Honor, Lealtad
-                </p>
+                <h3 className="text-xl font-bold text-white">
+                  {content.modalidad_privada_title || "Clases Privadas"}
+                </h3>
               </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-[#003366] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-bold text-white">5</span>
+              <div className="p-6 sm:p-8">
+                <div className="space-y-4">
+                  {(content.modalidad_privada_description || "Las clases privadas ofrecen atención personalizada uno a uno con el instructor. Permiten adaptar el ritmo, enfocarse en áreas específicas y profundizar en técnicas según las metas individuales del alumno.\n\nSon ideales para quienes buscan un progreso acelerado, tienen objetivos especiales o prefieren un entorno de entrenamiento más personalizado.").split('\n\n').map((paragraph, i) => (
+                    <p key={i} className="text-gray-600 leading-relaxed">
+                      {paragraph}
+                    </p>
+                  ))}
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Físico</h4>
-                <p className="text-sm text-gray-600">
-                  Ejercicio, Nutrición, Descanso, Higiene, Positivismo
-                </p>
               </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-[#003366] rounded-full flex items-center justify-center mx-auto mb-3">
-                  <span className="text-2xl font-bold text-white">3</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================================================================= */}
+      {/* FILOSOFÍA / CÓDIGO 753 SECTION                                   */}
+      {/* ================================================================= */}
+      <section id="filosofia" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-[#003366]/10 text-[#003366] rounded-full px-4 py-1.5 mb-4">
+              <BookOpen className="w-4 h-4" />
+              <span className="text-sm font-medium uppercase tracking-wider">
+                Nuestra Filosofía
+              </span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Código 753™
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              {content.codigo_753_intro ||
+                "La filosofía está resumida en el Código 753, el cual se enseña a todos los alumnos (niños, adolescentes y adultos). Dicho código representa la filosofía de vida de la Metodología Valente Brothers™."}
+            </p>
+          </div>
+
+          {/* The 3 Components */}
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+              {/* 7 - Spiritual */}
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#003366] to-[#0D47A1] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span className="text-3xl font-bold text-white">7</span>
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Mental</h4>
-                <p className="text-sm text-gray-600">
-                  Conciencia, Balance emocional, Adaptabilidad
+                <h4 className="text-lg font-bold text-gray-900 mb-1">
+                  {content.codigo_753_spiritual_label || "Espiritual"}
+                </h4>
+                <p className="text-sm text-gray-500 mb-4">
+                  {content.codigo_753_spiritual_description || 'El "7" representa la parte Espiritual. Enumera las virtudes de los antiguos guerreros Samurai.'}
                 </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {(content.codigo_753_spiritual || "Rectitud, Coraje, Benevolencia, Respeto, Honestidad, Honor, Lealtad").split(', ').map((virtue, i) => (
+                    <span key={i} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#003366]/10 text-[#003366]">
+                      {virtue}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 5 - Physical */}
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#003366] to-[#0D47A1] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span className="text-3xl font-bold text-white">5</span>
+                </div>
+                <h4 className="text-lg font-bold text-gray-900 mb-1">
+                  {content.codigo_753_physical_label || "Físico"}
+                </h4>
+                <p className="text-sm text-gray-500 mb-4">
+                  {content.codigo_753_physical_description || 'El "5" representa la parte física o corporal. Enumera los elementos para tener una vida sana.'}
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {(content.codigo_753_physical || "Ejercicio, Nutrición, Descanso, Higiene, Positivismo").split(', ').map((element, i) => (
+                    <span key={i} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#003366]/10 text-[#003366]">
+                      {element}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3 - Mental */}
+              <div className="p-8 text-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-[#003366] to-[#0D47A1] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <span className="text-3xl font-bold text-white">3</span>
+                </div>
+                <h4 className="text-lg font-bold text-gray-900 mb-1">
+                  {content.codigo_753_mental_label || "Mental"}
+                </h4>
+                <p className="text-sm text-gray-500 mb-4">
+                  {content.codigo_753_mental_description || 'El "3" representa la parte mental. Enumera los estados de la mente.'}
+                </p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {(content.codigo_753_mental || "Conciencia, Balance emocional, Adaptabilidad").split(', ').map((state, i) => (
+                    <span key={i} className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-[#003366]/10 text-[#003366]">
+                      {state}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -404,7 +659,7 @@ export default function HomePage() {
       {/* ================================================================= */}
       {/* SCHEDULE SECTION                                                */}
       {/* ================================================================= */}
-      <section id="horarios" className="py-20 bg-gray-50">
+      <section id="horarios" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center mb-16">
@@ -470,7 +725,7 @@ export default function HomePage() {
       {/* ================================================================= */}
       {/* MERCHANDISE SECTION                                              */}
       {/* ================================================================= */}
-      <section id="mercancia" className="py-20 bg-white">
+      <section id="mercancia" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center mb-16">
@@ -566,7 +821,7 @@ export default function HomePage() {
       {/* ================================================================= */}
       {/* TESTIMONIALS SECTION                                             */}
       {/* ================================================================= */}
-      <section id="testimonios" className="py-20 bg-gray-50">
+      <section id="testimonios" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center mb-16">
@@ -654,7 +909,7 @@ export default function HomePage() {
       {/* ================================================================= */}
       {/* CONTACT & LOCATION SECTION                                       */}
       {/* ================================================================= */}
-      <section id="contacto" className="py-20 bg-white">
+      <section id="contacto" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center mb-16">

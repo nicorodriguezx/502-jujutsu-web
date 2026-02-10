@@ -17,10 +17,12 @@ import {
   ShoppingBag,
   Quote,
   LogOut,
+  Heart,
 } from "lucide-react";
 
 const NAV_ITEMS = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/admin/quienes-somos", label: "Quiénes Somos", icon: Heart },
   { to: "/admin/programs", label: "Programas", icon: BookOpen },
   { to: "/admin/schedule", label: "Horarios", icon: Calendar },
   // { to: "/admin/instructors", label: "Instructores", icon: Users },

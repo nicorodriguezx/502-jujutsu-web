@@ -27,6 +27,7 @@ import Merchandise from "./pages/Merchandise";
 import Testimonials from "./pages/Testimonials";
 import Inquiries from "./pages/Inquiries";
 import AdminUsers from "./pages/AdminUsers";
+import QuienesSomos from "./pages/QuienesSomos";
 
 function ProtectedRoute({ children }) {
   const { isLoggedIn } = useAuth();
@@ -60,6 +61,7 @@ function AppRoutes() {
         }
       >
         <Route index element={<Dashboard />} />
+        <Route path="quienes-somos" element={<QuienesSomos />} />
         <Route path="programs" element={<Programs />} />
         <Route path="schedule" element={<ScheduleEntries />} />
         <Route path="instructors" element={<Instructors />} />

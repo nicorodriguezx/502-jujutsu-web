@@ -10,9 +10,11 @@ This project consists of:
 - **Admin Panel** (React/Vite/Tailwind) - Complete content management interface
 
 ### Current Features
-- **Professional Public Website** - Complete landing page with hero, programs, schedule, merchandise, testimonials, and contact sections
+- **Professional Public Website** - Complete landing page with hero, methodology, about us, programs, training modalities, philosophy, schedule, merchandise, testimonials, and contact sections
 - **6 Martial Arts Programs** (First Steps through Law Enforcement training)
-- **Complete Content Management** - All public and admin content managed through web interface
+- **Comprehensive Content Management** - All public and admin content managed through web interface, including academy information, mission, methodology, and philosophy
+- **"Quienes Somos" Content System** - Complete about us management with mission, purpose, team photos, and academy history
+- **Código 753 Philosophy** - Interactive presentation of the three components (Spiritual 7, Physical 5, Mental 3) of Valente Brothers methodology
 - **Advanced Image Management** - Direct file uploads with automatic WebP conversion and Cloudflare R2 storage
 - **Dynamic Visual Content** - Hero background image carousel and program header images with hover effects
 - **Merchandise Catalog** - Product showcase for in-person sales (kimonos, equipment, apparel)
@@ -287,7 +289,10 @@ See `docs/image-upload-system.md` for complete setup instructions.
 - Real-time content management
 
 ### Content Management
-- Editable hero section, about page, contact info
+- **Academy Information Management** - Complete "Quienes Somos" section with mission, purpose, team photos, and history
+- **Philosophy & Methodology** - Código 753 philosophy (Spiritual 7, Physical 5, Mental 3) and Valente Brothers methodology
+- **Training Modalities** - Group classes vs. private classes content management
+- Editable hero section, contact info, and all public website content
 - Class schedule management
 - Instructor profile management
 - Photo gallery with categories
@@ -332,6 +337,7 @@ For reference, previous versions used raw SQL migrations. The `database/` folder
 
 ### Admin Panel Navigation
 - **Dashboard** - Content overview and statistics
+- **Quienes Somos** - Academy information, mission, purpose, methodology, and Código 753 philosophy management
 - **Programas** - Manage martial arts programs (6 total)
 - **Horarios** - Class schedule management
 - **Instructores** - Instructor profiles

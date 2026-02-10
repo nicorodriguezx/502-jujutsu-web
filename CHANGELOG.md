@@ -4,6 +4,89 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2026-02-10
+
+### ✨ **Added - Complete "Quienes Somos" Content Management & Enhanced Public Website**
+
+#### **📝 New Admin Content Management System**
+- **"Quienes Somos" Admin Page** - Complete content management for academy information
+  - About Us section with headline, description, and optional team photo
+  - Mission statement with customizable headline and text
+  - Purpose statement with dedicated content block
+  - Methodology description for Valente Brothers system
+  - Código 753 philosophy with detailed spiritual, physical, and mental components
+- **Comprehensive Content Fields** - 18+ editable content keys for complete customization
+- **Real-time Content Updates** - Save individual fields or entire sections
+- **Admin Navigation Enhancement** - Added "Quienes Somos" to admin sidebar with heart icon
+
+#### **🌐 Enhanced Public Website Experience**
+- **New "Metodología" Section** - Dedicated methodology showcase with Código 753 introduction
+  - Professional section header with "Nuestro Sistema" badge
+  - Methodology description with Valente Brothers branding
+  - Interactive Código 753 preview linking to philosophy section
+  - Visual design with gradient accent elements
+- **Enhanced "Quienes Somos" Section** - Complete about page with mission and purpose
+  - Team photo support with optional display
+  - Mission statement with target icon and gradient background
+  - Purpose statement with eye icon and clean card design
+  - Improved content structure and visual hierarchy
+- **New "Modalidad" Section** - Training modalities showcase
+  - Group classes vs. private classes comparison
+  - Detailed descriptions for each training approach
+  - Visual cards with academy branding colors
+- **Improved "Código 753" Philosophy Section** - Enhanced presentation
+  - Three-component breakdown (Spiritual 7, Physical 5, Mental 3)
+  - Interactive virtue/element/state tags with academy colors
+  - Detailed descriptions for each component
+  - Professional grid layout with gradient circles
+
+#### **🧭 Navigation & Routing Updates**
+- **Admin Layout Enhancement** - Added Quienes Somos route and navigation item
+- **Public Layout Updates** - Enhanced navigation menu with new sections:
+  - Added "Metodología" link
+  - Added "Quienes Somos" link
+  - Added "Código 753" link (renamed from "Filosofía")
+  - Removed "Testimonios" from navigation
+- **Scroll Behavior** - Updated hero scroll indicator to link to methodology section
+
+#### **🎨 Visual Design Improvements**
+- **Section Background Alternation** - Alternating gray/white backgrounds for better visual flow
+- **Enhanced Typography** - Improved text hierarchy and readability
+- **Professional Card Designs** - Consistent card styling throughout new sections
+- **Icon Integration** - Strategic use of Lucide React icons for visual enhancement
+- **Mobile Responsiveness** - All new sections fully responsive across devices
+
+#### **📊 Database Content Expansion**
+- **18 New Content Keys** - Comprehensive content management for all new sections:
+  - `quienes_somos_headline`, `quienes_somos_description`, `quienes_somos_team_photo_url`
+  - `quienes_somos_mision_headline`, `quienes_somos_mision`
+  - `quienes_somos_proposito_headline`, `quienes_somos_proposito`
+  - `methodology_headline`, `methodology`
+  - `codigo_753_intro`, `codigo_753_spiritual*`, `codigo_753_physical*`, `codigo_753_mental*`
+  - `modalidad_*` keys for training modality content
+- **Updated Seed Data** - Complete Spanish content for Guatemala market
+- **Legacy Compatibility** - Maintained backward compatibility with existing content keys
+
+### 🔄 **Changed**
+- **Homepage Section Reordering** - Strategic section placement for better user journey
+- **Navigation Flow** - Updated scroll targets and section linking
+- **Content Architecture** - Enhanced content organization for better user experience
+- **Database Seed Updates** - Expanded seed data with comprehensive Spanish content
+
+### 📚 **Content Management Features**
+- **Section-based Organization** - Logical grouping of related content fields
+- **Individual Field Saving** - Save specific content without affecting other fields
+- **Bulk Section Saving** - Save entire content sections at once
+- **Content Preview Integration** - Real-time preview of changes on public site
+- **Error Handling** - Comprehensive error messages and validation feedback
+
+### 🎯 **User Experience Enhancements**
+- **Progressive Content Discovery** - Methodology introduction leads to detailed philosophy
+- **Clear Information Hierarchy** - Mission and purpose prominently displayed
+- **Interactive Navigation** - Smooth scrolling between related sections
+- **Cultural Relevance** - Content tailored for Guatemala City martial arts community
+- **Professional Presentation** - Academy values and philosophy clearly communicated
+
 ## [0.2.2] - 2026-02-09
 
 ### 🔄 **Major Infrastructure Migration - Prisma ORM Integration**

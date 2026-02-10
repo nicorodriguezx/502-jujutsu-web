@@ -27,10 +27,12 @@ export default function PublicLayout() {
 
   const navLinks = [
     { label: "Inicio", href: "#hero" },
+    { label: "Metodología", href: "#metodologia" },
+    { label: "Quiénes Somos", href: "#quienes-somos" },
     { label: "Programas", href: "#programas" },
+    { label: "Código 753", href: "#filosofia" },
     { label: "Horarios", href: "#horarios" },
     { label: "Mercancía", href: "#mercancia" },
-    { label: "Testimonios", href: "#testimonios" },
     { label: "Contacto", href: "#contacto" },
   ];
 
