@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------
-// Admin page: Gallery Images
+// Admin page: Gallery Images + Section Divider Images
 // ---------------------------------------------------------------------------
 import { useState, useEffect } from "react";
 import api from "../api";
@@ -7,6 +7,33 @@ import { getToken } from "../api";
 
 const CATEGORIES = ["training", "facilities", "events", "instructors", "students", "hero"];
 const EMPTY = { url: "", alt_text: "", caption: "", category: "training", display_order: 0, is_active: true };
+
+const DIVIDER_FIELDS = [
+  {
+    urlKey: "divider_hero_metodologia_url",
+    altKey: "divider_hero_metodologia_alt",
+    label: "Hero → Metodología",
+    description: "Acción intensa de entrenamiento",
+  },
+  {
+    urlKey: "divider_metodologia_quienes_url",
+    altKey: "divider_metodologia_quienes_alt",
+    label: "Metodología → Quiénes Somos",
+    description: "Foto de equipo o grupo",
+  },
+  {
+    urlKey: "divider_modalidad_filosofia_url",
+    altKey: "divider_modalidad_filosofia_alt",
+    label: "Modalidad → Código 753",
+    description: "Imagen filosófica o meditativa",
+  },
+  {
+    urlKey: "divider_horarios_mercancia_url",
+    altKey: "divider_horarios_mercancia_alt",
+    label: "Horarios → Mercancía",
+    description: "Energía grupal de entrenamiento",
+  },
+];
 
 export default function GalleryImages() {
   const [items, setItems] = useState([]);
@@ -16,7 +43,13 @@ export default function GalleryImages() {
   const [uploading, setUploading] = useState(false);
   const [uploadMode, setUploadMode] = useState("url"); // "url" or "file"
 
-  useEffect(() => { fetchItems(); }, []);
+  // Divider state
+  const [dividerValues, setDividerValues] = useState({});
+  const [dividerSaving, setDividerSaving] = useState({});
+  const [dividerSaved, setDividerSaved] = useState({});
+  const [dividerError, setDividerError] = useState(null);
+
+  useEffect(() => { fetchItems(); fetchDividers(); }, []);
 
   async function fetchItems() {
     try { setItems(await api.get("/api/gallery-images")); } catch (err) { console.error(err); }
@@ -102,6 +135,65 @@ export default function GalleryImages() {
       if (editingId === id) resetForm();
       fetchItems();
     } catch (err) { setError(err.message); }
+  }
+
+  // --- Divider helpers ---
+  async function fetchDividers() {
+    try {
+      const items = await api.get("/api/site-content");
+      const map = {};
+      for (const item of items) map[item.section_key] = item.content_text;
+      setDividerValues(map);
+    } catch (err) { console.error(err); }
+  }
+
+  function handleDividerChange(key, value) {
+    setDividerValues((prev) => ({ ...prev, [key]: value }));
+    setDividerSaved((prev) => ({ ...prev, [key]: false }));
+  }
+
+  async function handleDividerSave(keys) {
+    setDividerError(null);
+    for (const key of keys) setDividerSaving((prev) => ({ ...prev, [key]: true }));
+    try {
+      for (const key of keys) {
+        await api.put(`/api/site-content/${key}`, { content_text: dividerValues[key] || "" });
+        setDividerSaved((prev) => ({ ...prev, [key]: true }));
+      }
+      setTimeout(() => {
+        for (const key of keys) setDividerSaved((prev) => ({ ...prev, [key]: false }));
+      }, 3000);
+    } catch (err) {
+      setDividerError(`Error guardando: ${err.message}`);
+    } finally {
+      for (const key of keys) setDividerSaving((prev) => ({ ...prev, [key]: false }));
+    }
+  }
+
+  async function handleDividerUpload(field, e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setDividerSaving((prev) => ({ ...prev, [`${field.urlKey}_upload`]: true }));
+    setDividerError(null);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const response = await fetch("/api/upload/image?preset=hero", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${getToken()}` },
+        body: formData,
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Upload failed");
+      }
+      const data = await response.json();
+      handleDividerChange(field.urlKey, data.url);
+    } catch (err) {
+      setDividerError(err.message);
+    } finally {
+      setDividerSaving((prev) => ({ ...prev, [`${field.urlKey}_upload`]: false }));
+    }
   }
 
   return (
@@ -251,6 +343,83 @@ export default function GalleryImages() {
           )}
         </div>
       </form>
+
+      {/* ================================================================= */}
+      {/* SECTION DIVIDERS                                                  */}
+      {/* ================================================================= */}
+      <div className="mt-12 mb-6">
+        <h2 className="text-xl font-bold text-slate-800">Divisores entre Secciones</h2>
+        <p className="text-sm text-slate-500 mt-1">
+          Imágenes de ancho completo entre secciones del sitio. Recomendado: fotos panorámicas (1920x600px mínimo).
+        </p>
+      </div>
+
+      {dividerError && (
+        <div className="bg-red-50 text-red-700 text-sm px-3 py-2 rounded border border-red-200 mb-4">{dividerError}</div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {DIVIDER_FIELDS.map((field) => {
+          const url = dividerValues[field.urlKey] || "";
+          const alt = dividerValues[field.altKey] || "";
+          const isUploading = dividerSaving[`${field.urlKey}_upload`];
+
+          return (
+            <div key={field.urlKey} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+              <div className="bg-slate-50 border-b border-gray-200 px-5 py-3">
+                <h4 className="text-sm font-semibold text-slate-800">{field.label}</h4>
+                <p className="text-xs text-slate-500 mt-0.5">{field.description}</p>
+              </div>
+              <div className="p-5 space-y-3">
+                {/* Preview */}
+                {url && (
+                  <div className="relative rounded-lg overflow-hidden bg-gray-100 h-36">
+                    <img src={url} alt={alt} className="w-full h-full object-cover" onError={(e) => { e.target.style.display = "none"; }} />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20" />
+                  </div>
+                )}
+
+                {/* Upload */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Subir imagen</label>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                    onChange={(e) => handleDividerUpload(field, e)}
+                    disabled={isUploading}
+                    className="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                  />
+                  {isUploading && <p className="mt-1 text-xs text-blue-600">Subiendo y optimizando...</p>}
+                </div>
+
+                {/* URL */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">URL de imagen</label>
+                  <input type="text" value={url} onChange={(e) => handleDividerChange(field.urlKey, e.target.value)} placeholder="https://..." className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm" />
+                </div>
+
+                {/* Alt */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Texto alternativo</label>
+                  <input type="text" value={alt} onChange={(e) => handleDividerChange(field.altKey, e.target.value)} placeholder="Descripción de la imagen..." className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm" />
+                </div>
+
+                {/* Save */}
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleDividerSave([field.urlKey, field.altKey])}
+                    disabled={dividerSaving[field.urlKey]}
+                    className="bg-blue-600 text-white px-4 py-1.5 rounded-md text-xs font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+                  >
+                    {dividerSaving[field.urlKey] ? "Guardando..." : "Guardar"}
+                  </button>
+                  {dividerSaved[field.urlKey] && <span className="text-xs text-green-600">✓ Guardado</span>}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

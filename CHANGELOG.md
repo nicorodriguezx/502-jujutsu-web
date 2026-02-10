@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Responsive design with lazy loading and subtle gradient overlays
 
 #### **⚙️ Admin Management**
-- Added "Divisores Visuales" section to Quiénes Somos admin page
+- Added "Divisores entre Secciones" section to Gallery admin page
 - File upload and URL input with WebP conversion
 - Individual divider cards with preview and alt text management
 
@@ -27,7 +27,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### 📊 **Files Modified**
 - `client/src/pages/public/HomePage.jsx` - SectionDivider component and insertions
-- `client/src/pages/QuienesSomos.jsx` - Admin management interface
+- `client/src/pages/GalleryImages.jsx` - Divider admin management interface
 - `prisma/seed.js` - Database keys
 
 ## [0.2.3] - 2026-02-10
