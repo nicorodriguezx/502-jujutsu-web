@@ -26,6 +26,34 @@ import {
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
+// Section Divider — full-width image strip between sections
+// ---------------------------------------------------------------------------
+function SectionDivider({ imageUrl, altText, overlayText }) {
+  if (!imageUrl) return null;
+
+  return (
+    <div className="relative h-56 sm:h-72 lg:h-80 overflow-hidden">
+      <img
+        src={imageUrl}
+        alt={altText || ""}
+        className="w-full h-full object-cover"
+        loading="lazy"
+      />
+      {/* Dark gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/30" />
+      {/* Optional overlay text */}
+      {overlayText && (
+        <div className="absolute inset-0 flex items-center justify-center px-4">
+          <p className="text-white text-lg sm:text-xl lg:text-2xl font-semibold tracking-wide text-center drop-shadow-lg">
+            {overlayText}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Schedule Day Accordion Component
 // ---------------------------------------------------------------------------
 function ScheduleDayAccordion({ dayName, classes }) {
@@ -282,6 +310,14 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
+      {/* DIVIDER: Hero → Metodología                                      */}
+      {/* ================================================================= */}
+      <SectionDivider
+        imageUrl={content.divider_hero_metodologia_url}
+        altText={content.divider_hero_metodologia_alt}
+      />
+
+      {/* ================================================================= */}
       {/* METODOLOGÍA & CÓDIGO 753 SECTION                                 */}
       {/* ================================================================= */}
       <section id="metodologia" className="py-20 bg-gray-50">
@@ -331,6 +367,14 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ================================================================= */}
+      {/* DIVIDER: Metodología → Quiénes Somos                            */}
+      {/* ================================================================= */}
+      <SectionDivider
+        imageUrl={content.divider_metodologia_quienes_url}
+        altText={content.divider_metodologia_quienes_alt}
+      />
 
       {/* ================================================================= */}
       {/* QUIÉNES SOMOS SECTION                                            */}
@@ -568,6 +612,14 @@ export default function HomePage() {
       </section>
 
       {/* ================================================================= */}
+      {/* DIVIDER: Modalidad → Código 753                                  */}
+      {/* ================================================================= */}
+      <SectionDivider
+        imageUrl={content.divider_modalidad_filosofia_url}
+        altText={content.divider_modalidad_filosofia_alt}
+      />
+
+      {/* ================================================================= */}
       {/* FILOSOFÍA / CÓDIGO 753 SECTION                                   */}
       {/* ================================================================= */}
       <section id="filosofia" className="py-20 bg-gray-50">
@@ -721,6 +773,14 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ================================================================= */}
+      {/* DIVIDER: Horarios → Mercancía                                    */}
+      {/* ================================================================= */}
+      <SectionDivider
+        imageUrl={content.divider_horarios_mercancia_url}
+        altText={content.divider_horarios_mercancia_alt}
+      />
 
       {/* ================================================================= */}
       {/* MERCHANDISE SECTION                                              */}

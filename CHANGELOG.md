@@ -4,6 +4,32 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-02-10
+
+### ✨ **Added - Visual Section Dividers**
+
+#### **🖼️ Full-Width Image Dividers**
+- Added 4 visual section breaks between major website sections:
+  - Hero → Metodología: Action shot of intense training
+  - Metodología → Quiénes Somos: Team/group photo
+  - Modalidad → Código 753: Philosophical/meditative training image
+  - Horarios → Mercancía: Energy-filled group training scene
+- Responsive design with lazy loading and subtle gradient overlays
+
+#### **⚙️ Admin Management**
+- Added "Divisores Visuales" section to Quiénes Somos admin page
+- File upload and URL input with WebP conversion
+- Individual divider cards with preview and alt text management
+
+#### **🗃️ Database Updates**
+- Added 8 new site_content keys for divider images and alt text
+- Integrated into Prisma seed for initial setup
+
+### 📊 **Files Modified**
+- `client/src/pages/public/HomePage.jsx` - SectionDivider component and insertions
+- `client/src/pages/QuienesSomos.jsx` - Admin management interface
+- `prisma/seed.js` - Database keys
+
 ## [0.2.3] - 2026-02-10
 
 ### ✨ **Added - Complete "Quienes Somos" Content Management & Enhanced Public Website**

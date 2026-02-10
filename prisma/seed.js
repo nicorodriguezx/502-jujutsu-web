@@ -183,6 +183,16 @@ async function main() {
 
     // Visual settings
     ["use_parallax_effects", "true"],
+
+    // Section Divider Images (visual breakpoints between sections)
+    ["divider_hero_metodologia_url", ""],
+    ["divider_hero_metodologia_alt", "Entrenamiento intenso de Jūjutsu"],
+    ["divider_metodologia_quienes_url", ""],
+    ["divider_metodologia_quienes_alt", "Equipo 502 Jūjutsu"],
+    ["divider_modalidad_filosofia_url", ""],
+    ["divider_modalidad_filosofia_alt", "Filosofía y disciplina en el mat"],
+    ["divider_horarios_mercancia_url", ""],
+    ["divider_horarios_mercancia_alt", "Energía grupal en entrenamiento"],
   ];
 
   for (const [section_key, content_text] of siteContentData) {

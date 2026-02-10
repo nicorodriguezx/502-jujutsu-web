@@ -1,9 +1,42 @@
 // ---------------------------------------------------------------------------
 // Admin page: Quiénes Somos content management
-// Manages the "About Us", Mission, and Methodology/Código 753 content keys.
+// Manages the "About Us", Mission, Methodology/Código 753 content keys,
+// and visual section divider images.
 // ---------------------------------------------------------------------------
 import { useState, useEffect } from "react";
 import api from "../api";
+import { getToken } from "../api";
+
+const DIVIDER_FIELDS = [
+  {
+    urlKey: "divider_hero_metodologia_url",
+    altKey: "divider_hero_metodologia_alt",
+    label: "Hero → Metodología",
+    description: "Acción intensa de entrenamiento. Se muestra entre la sección principal y Metodología.",
+    preset: "hero",
+  },
+  {
+    urlKey: "divider_metodologia_quienes_url",
+    altKey: "divider_metodologia_quienes_alt",
+    label: "Metodología → Quiénes Somos",
+    description: "Foto de equipo o grupo. Se muestra entre Metodología y Quiénes Somos.",
+    preset: "hero",
+  },
+  {
+    urlKey: "divider_modalidad_filosofia_url",
+    altKey: "divider_modalidad_filosofia_alt",
+    label: "Modalidad → Código 753",
+    description: "Imagen filosófica o meditativa. Se muestra entre Modalidad y Código 753.",
+    preset: "hero",
+  },
+  {
+    urlKey: "divider_horarios_mercancia_url",
+    altKey: "divider_horarios_mercancia_alt",
+    label: "Horarios → Mercancía",
+    description: "Energía grupal de entrenamiento. Se muestra entre Horarios y Mercancía.",
+    preset: "hero",
+  },
+];
 
 const CONTENT_SECTIONS = [
   {
@@ -56,6 +89,116 @@ const CONTENT_SECTIONS = [
     ],
   },
 ];
+
+// Sub-component for each divider image field (upload + URL + preview)
+function DividerImageField({ field, values, onChange, onSave, saving, saved }) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+
+  async function handleFileUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+      const response = await fetch(`/api/upload/image?preset=${field.preset}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${getToken()}` },
+        body: formData,
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Upload failed");
+      }
+      const data = await response.json();
+      onChange(field.urlKey, data.url);
+    } catch (err) {
+      setUploadError(err.message);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  const url = values[field.urlKey] || "";
+  const alt = values[field.altKey] || "";
+
+  return (
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <div className="bg-slate-50 border-b border-gray-200 px-5 py-3">
+        <h4 className="text-sm font-semibold text-slate-800">{field.label}</h4>
+        <p className="text-xs text-slate-500 mt-0.5">{field.description}</p>
+      </div>
+      <div className="p-5 space-y-4">
+        {/* Image preview */}
+        {url && (
+          <div className="relative rounded-lg overflow-hidden bg-gray-100 h-40">
+            <img
+              src={url}
+              alt={alt}
+              className="w-full h-full object-cover"
+              onError={(e) => { e.target.style.display = "none"; }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/20" />
+          </div>
+        )}
+
+        {/* File Upload */}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Subir imagen</label>
+          <input
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+            onChange={handleFileUpload}
+            disabled={uploading}
+            className="block w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+          />
+          {uploading && <p className="mt-1 text-xs text-blue-600">Subiendo y optimizando...</p>}
+          {uploadError && <p className="mt-1 text-xs text-red-600">{uploadError}</p>}
+        </div>
+
+        {/* URL input */}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">URL de imagen</label>
+          <input
+            type="text"
+            value={url}
+            onChange={(e) => onChange(field.urlKey, e.target.value)}
+            placeholder="https://..."
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+          />
+        </div>
+
+        {/* Alt text */}
+        <div>
+          <label className="block text-xs font-medium text-gray-600 mb-1">Texto alternativo</label>
+          <input
+            type="text"
+            value={alt}
+            onChange={(e) => onChange(field.altKey, e.target.value)}
+            placeholder="Descripción de la imagen..."
+            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm"
+          />
+        </div>
+
+        {/* Save buttons */}
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => onSave([field.urlKey, field.altKey])}
+            disabled={saving[field.urlKey]}
+            className="bg-blue-600 text-white px-4 py-1.5 rounded-md text-xs font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          >
+            {saving[field.urlKey] ? "Guardando..." : "Guardar"}
+          </button>
+          {saved[field.urlKey] && (
+            <span className="text-xs text-green-600">✓ Guardado</span>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function QuienesSomos() {
   const [values, setValues] = useState({});
@@ -120,6 +263,30 @@ export default function QuienesSomos() {
       }, 3000);
     } catch (err) {
       setError(`Error guardando sección: ${err.message}`);
+    } finally {
+      for (const key of keys) {
+        setSaving((prev) => ({ ...prev, [key]: false }));
+      }
+    }
+  }
+
+  async function handleSaveDivider(keys) {
+    setError(null);
+    for (const key of keys) {
+      setSaving((prev) => ({ ...prev, [key]: true }));
+    }
+    try {
+      for (const key of keys) {
+        await api.put(`/api/site-content/${key}`, { content_text: values[key] || "" });
+        setSaved((prev) => ({ ...prev, [key]: true }));
+      }
+      setTimeout(() => {
+        for (const key of keys) {
+          setSaved((prev) => ({ ...prev, [key]: false }));
+        }
+      }, 3000);
+    } catch (err) {
+      setError(`Error guardando divisor: ${err.message}`);
     } finally {
       for (const key of keys) {
         setSaving((prev) => ({ ...prev, [key]: false }));
@@ -203,6 +370,31 @@ export default function QuienesSomos() {
               </div>
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* ================================================================= */}
+      {/* DIVISORES VISUALES                                                */}
+      {/* ================================================================= */}
+      <div className="mt-12 mb-8">
+        <h2 className="text-xl font-bold text-slate-800">Divisores Visuales</h2>
+        <p className="text-sm text-slate-500 mt-1">
+          Imágenes de ancho completo que se muestran entre secciones del sitio para crear un efecto visual más atractivo.
+          Recomendado: fotos panorámicas de alta calidad (1920x600px mínimo).
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {DIVIDER_FIELDS.map((field) => (
+          <DividerImageField
+            key={field.urlKey}
+            field={field}
+            values={values}
+            onChange={handleChange}
+            onSave={handleSaveDivider}
+            saving={saving}
+            saved={saved}
+          />
         ))}
       </div>
     </div>
