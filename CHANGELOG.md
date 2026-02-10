@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **Brand Color Palette** - Replaced hardcoded colors with semantic Tailwind color scales:
   - Navy: 50-950 scale (`#003366` → `navy-600`, `#0D47A1` → `navy-500`)
   - Gold: 50-800 scale for featured testimonials (`#D4A017` → `gold-400`)
+- **Typography System** - Switched to Rajdhani for stronger brand identity:
+  - Replaced Inter with Rajdhani font family (weights 300-700)
 - **Custom Animations** - Added scroll-triggered entrance animations:
   - Fade-in, fade-up, scale-in effects with IntersectionObserver
   - Staggered children animations for grid layouts
