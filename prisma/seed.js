@@ -107,7 +107,7 @@ async function main() {
   }
 
   // -----------------------------------------------------------------------
-  // 2. Site Content (37 entries — seed + migration-002 final state)
+  // 2. Site Content (45 entries)
   // -----------------------------------------------------------------------
   console.log("  Site content...");
   const siteContentData = [
@@ -116,11 +116,7 @@ async function main() {
     ["hero_subheadline", "Transforma tu vida con Helio Gracie Jūjutsu. Clases para todas las edades en Ciudad de Guatemala."],
     ["hero_cta_primary", "Contactar"],
     ["hero_cta_secondary", "Ver Horarios"],
-    ["hero_background_image_1", ""],
-    ["hero_background_image_2", ""],
-    ["hero_background_image_3", ""],
     ["hero_background_overlay_opacity", "0.6"],
-    ["hero_image_transition_interval", "5000"],
 
     // Quiénes Somos
     ["quienes_somos_headline", "Quiénes Somos"],
@@ -130,12 +126,6 @@ async function main() {
     ["quienes_somos_mision", "Nuestra misión es desarrollar en los alumnos confianza en sus capacidades físicas y lograr bienestar por medio de la enseñanza de un completo y eficiente arte marcial de defensa personal, dentro de un entorno seguro, limpio y respetuoso. Estamos comprometidos a preservar las raíces del Jūjutsu, tanto técnicas como filosóficas, tal y como nos han enseñado los hermanos Valente."],
     ["quienes_somos_proposito_headline", "Nuestro Propósito"],
     ["quienes_somos_proposito", "Inspirados en tanto que admiramos y valoramos de Valente Brothers HQ en Miami, tratamos de que 502 Jūjutsu sea una academia con instalaciones de primer nivel, instructores altamente calificados y trato personalizado. Queremos que nuestros alumnos se sientan en un ambiente familiar y amigable, atendidos por instructores amables y dedicados.\n\nEn 502 Jūjutsu nos esforzamos por crear una atmosfera segura, enriquecedora y positiva, donde todo estudiante, sin importar su edad, género o atributos físicos, aumentará no solo su habilidad o destreza para defenderse ante cualquier situación, sino también mejorará su enfoque, auto-confianza, disciplina, así como su capacidad física, mental y espiritual."],
-
-    // About (legacy keys kept for backward compatibility)
-    ["about_history", "Fundada por amigos con 15 a 25 años cada uno entrenando bajo la metodología Hermanos Valente, desarrollada a partir de las enseñanzas de Helio Gracie transmitidas a través de 3 generaciones de la familia Valente. Raíces guatemaltecas fuertes con enfoque comunitario."],
-    ["about_authenticity", 'Utiliza la transliteración correcta 柔術 (Jūjutsu) en lugar del fonético "jiu-jitsu", preservando el arte marcial tradicional japonés.'],
-    ["about_mission", "Instalaciones de clase mundial, instructores altamente calificados y atención personalizada. Ambiente familiar con instructores dedicados y amigables comprometidos a preservar las raíces del Jūjutsu tal como lo enseñan los Hermanos Valente."],
-    ["about_student_goals", "Construir confianza física y bienestar a través de un arte marcial de defensa personal completo y eficiente en un ambiente seguro, limpio y respetuoso. Mejorar habilidades de defensa personal, enfoque, confianza, disciplina y capacidades físicas, mentales y espirituales sin importar edad, género o atributos físicos."],
 
     // Código 753
     ["codigo_753_intro", "La filosofía está resumida en el Código 753, el cual se enseña a todos los alumnos (niños, adolescentes y adultos). Dicho código representa la filosofía de vida de la Metodología Valente Brothers\u2122. El ser humano está formado por espíritu, cuerpo y mente. El nombre del Código (7-5-3) representa cada uno de estos 3 componentes."],
@@ -156,14 +146,12 @@ async function main() {
     // Programs section
     ["programas_headline", "Entrenamiento para Todas las Edades"],
     ["programas_description", "Desde niños hasta adultos, ofrecemos programas especializados que siguen la metodología Hermanos Valente basada en Helio Gracie Jūjutsu."],
-    ["programas_background_style", "light"],
 
     // Schedule section
     ["schedule_headline", "Horarios de Clases"],
     ["schedule_description", "Nuestro horario semanal está diseñado para adaptarse a diferentes edades y niveles. Todas las clases siguen un progreso estructurado."],
     ["schedule_cta", "Contactar por WhatsApp"],
     ["schedule_note", "Para confirmar horarios y disponibilidad, contáctanos por WhatsApp."],
-    ["schedule_background_style", "light"],
 
     // Merchandise section
     ["merchandise_headline", "Mercancía"],
@@ -174,15 +162,11 @@ async function main() {
     // Testimonials section
     ["testimonials_headline", "Testimonios"],
     ["testimonials_description", "Historias reales de nuestros estudiantes y el impacto del entrenamiento en sus vidas."],
-    ["testimonials_background_style", "light"],
 
     // Contact section
     ["contact_headline", "Contáctanos"],
     ["contact_description", "Estamos listos para ayudarte. Escríbenos por WhatsApp o visítanos en nuestra academia."],
     ["contact_whatsapp_description", "Envíanos un mensaje directo por WhatsApp para información sobre clases, horarios y precios."],
-
-    // Visual settings
-    ["use_parallax_effects", "true"],
 
     // Section Divider Images (visual breakpoints between sections)
     ["divider_metodologia_quienes_url", ""],

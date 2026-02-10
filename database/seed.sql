@@ -77,11 +77,6 @@ INSERT INTO site_content (section_key, content_text) VALUES
 ('hero_cta_primary',     'Contactar'),
 ('hero_cta_secondary',   'Ver Horarios'),
 
-('about_history',        'Fundada por amigos con 15 a 25 años cada uno entrenando bajo la metodología Hermanos Valente, desarrollada a partir de las enseñanzas de Helio Gracie transmitidas a través de 3 generaciones de la familia Valente. Raíces guatemaltecas fuertes con enfoque comunitario.'),
-('about_authenticity',   'Utiliza la transliteración correcta 柔術 (Jūjutsu) en lugar del fonético "jiu-jitsu", preservando el arte marcial tradicional japonés.'),
-('about_mission',        'Instalaciones de clase mundial, instructores altamente calificados y atención personalizada. Ambiente familiar con instructores dedicados y amigables comprometidos a preservar las raíces del Jūjutsu tal como lo enseñan los Hermanos Valente.'),
-('about_student_goals',  'Construir confianza física y bienestar a través de un arte marcial de defensa personal completo y eficiente en un ambiente seguro, limpio y respetuoso. Mejorar habilidades de defensa personal, enfoque, confianza, disciplina y capacidades físicas, mentales y espirituales sin importar edad, género o atributos físicos.'),
-
 ('codigo_753_intro',     'Filosofía de vida completa enseñada a todos los estudiantes.'),
 ('codigo_753_spiritual', 'Rectitud, Coraje, Benevolencia, Respeto, Honestidad, Honor, Lealtad'),
 ('codigo_753_physical',  'Ejercicio, Nutrición, Descanso, Higiene, Positivismo'),
