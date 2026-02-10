@@ -104,7 +104,7 @@ export default function SiteContent() {
       </div>
 
       {/* New entry */}
-      <form onSubmit={handleCreate} className="bg-white rounded-lg border p-6 space-y-4 max-w-2xl">
+      <form onSubmit={handleCreate} className="bg-white rounded-lg border p-4 sm:p-6 space-y-4 max-w-2xl">
         <h3 className="text-lg font-semibold text-slate-800">Nueva entrada</h3>
         <div>
           <label className="block text-sm font-medium text-gray-700">Clave (section_key)</label>

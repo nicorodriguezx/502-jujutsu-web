@@ -6,14 +6,10 @@ const prisma = require("../db");
 
 const router = Router();
 
-// GET /api/merchandise -- list all, optional ?category= filter
-router.get("/", async (req, res) => {
+// GET /api/merchandise -- list all
+router.get("/", async (_req, res) => {
   try {
-    const { category } = req.query;
-    const where = category ? { category } : {};
-
     const items = await prisma.merchandise.findMany({
-      where,
       orderBy: { display_order: "asc" },
     });
     return res.json(items);
@@ -41,7 +37,7 @@ router.get("/:id", async (req, res) => {
 
 // POST /api/merchandise
 router.post("/", async (req, res) => {
-  const { name, slug, description, price, image_url, category, is_available, display_order } =
+  const { name, slug, description, price, image_url, is_available, display_order } =
     req.body;
 
   if (!name || !slug) {
@@ -56,7 +52,6 @@ router.post("/", async (req, res) => {
         description: description || null,
         price: price ?? null,
         image_url: image_url || null,
-        category: category || "general",
         is_available: is_available ?? true,
         display_order: display_order ?? 0,
       },
@@ -73,7 +68,7 @@ router.post("/", async (req, res) => {
 
 // PUT /api/merchandise/:id
 router.put("/:id", async (req, res) => {
-  const { name, slug, description, price, image_url, category, is_available, display_order } =
+  const { name, slug, description, price, image_url, is_available, display_order } =
     req.body;
 
   try {
@@ -85,7 +80,6 @@ router.put("/:id", async (req, res) => {
         description,
         price,
         image_url,
-        category,
         is_available,
         display_order,
       },

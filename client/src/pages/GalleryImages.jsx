@@ -267,7 +267,7 @@ export default function GalleryImages() {
               key={field.urlKey}
               className="bg-white rounded-lg border border-gray-200 overflow-hidden"
             >
-              <div className="bg-slate-50 border-b border-gray-200 px-5 py-3">
+              <div className="bg-slate-50 border-b border-gray-200 px-4 py-3 sm:px-5">
                 <h4 className="text-sm font-semibold text-slate-800">
                   {field.label}
                 </h4>
@@ -275,7 +275,7 @@ export default function GalleryImages() {
                   {field.description}
                 </p>
               </div>
-              <div className="p-5 space-y-3">
+              <div className="p-4 sm:p-5 space-y-3">
                 {/* Preview */}
                 {url && (
                   <div className="relative rounded-lg overflow-hidden bg-gray-100 h-36">
@@ -460,7 +460,7 @@ export default function GalleryImages() {
       {/* Gallery image form (no category field) */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded-lg border p-6 space-y-4 max-w-2xl"
+        className="bg-white rounded-lg border p-4 sm:p-6 space-y-4 max-w-2xl"
       >
         <h3 className="text-lg font-semibold text-slate-800">
           {editingId ? "Editar imagen" : "Nueva imagen"}

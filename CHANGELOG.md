@@ -76,6 +76,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Redesigned Gallery Images admin page with separate "Site Section Images" and "General Gallery" sections
 - Enhanced image upload with previews, alt text management, and remove functionality
 - Added new section divider between Quienes Somos and Programs
+- **Merchandise Simplification** - Removed category field from merchandise system for streamlined management
+- **Mobile-Responsive Admin Layout** - Added collapsible sidebar drawer for mobile admin navigation with keyboard shortcuts (Esc to close)
+
+#### **🔧 Technical Improvements**
+- Consistent form padding across all admin pages (`p-4 sm:p-6` responsive padding)
+- Removed category filtering from merchandise API endpoints
+- Updated Prisma schema to remove merchandise category field and index
 
 ### 📊 **Files Modified**
 - `client/tailwind.config.js` - Complete design system with custom colors, animations, and shadows

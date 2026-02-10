@@ -145,18 +145,18 @@ export default function QuienesSomos() {
         {CONTENT_SECTIONS.map((section) => (
           <div key={section.title} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             {/* Section Header */}
-            <div className="bg-slate-50 border-b border-gray-200 px-6 py-4">
+            <div className="bg-slate-50 border-b border-gray-200 px-4 py-3 sm:px-6 sm:py-4">
               <h3 className="text-lg font-semibold text-slate-800">{section.title}</h3>
               <p className="text-sm text-slate-500 mt-0.5">{section.description}</p>
             </div>
 
             {/* Fields */}
-            <div className="p-6 space-y-5">
+            <div className="p-4 sm:p-6 space-y-5">
               {section.fields.map((field) => (
                 <div key={field.key}>
-                  <label className="flex items-center justify-between mb-1.5">
+                  <label className="flex items-center justify-between gap-2 mb-1.5">
                     <span className="text-sm font-medium text-gray-700">{field.label}</span>
-                    <span className="text-xs font-mono text-gray-400">{field.key}</span>
+                    <span className="hidden sm:inline text-xs font-mono text-gray-400 truncate">{field.key}</span>
                   </label>
                   {field.type === "textarea" ? (
                     <textarea

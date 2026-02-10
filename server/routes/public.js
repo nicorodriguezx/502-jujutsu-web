@@ -180,7 +180,6 @@ router.get("/merchandise", async (_req, res) => {
         description: true,
         price: true,
         image_url: true,
-        category: true,
       },
       orderBy: { display_order: "asc" },
     });

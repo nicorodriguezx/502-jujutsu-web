@@ -900,13 +900,10 @@ export default function HomePage() {
                       )}
                     </div>
                     {item.description && (
-                      <p className="text-sm text-gray-500 leading-relaxed mb-3">
+                      <p className="text-sm text-gray-500 leading-relaxed">
                         {item.description}
                       </p>
                     )}
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 capitalize">
-                      {item.category}
-                    </span>
                   </div>
                 </div>
               ))}

@@ -4,8 +4,7 @@
 import { useState, useEffect } from "react";
 import api from "../api";
 
-const CATEGORIES = ["kimono", "equipment", "apparel", "general"];
-const EMPTY = { name: "", slug: "", description: "", price: "", image_url: "", category: "general", is_available: true, display_order: 0 };
+const EMPTY = { name: "", slug: "", description: "", price: "", image_url: "", is_available: true, display_order: 0 };
 
 export default function Merchandise() {
   const [items, setItems] = useState([]);
@@ -28,7 +27,6 @@ export default function Merchandise() {
       description: item.description || "",
       price: item.price ?? "",
       image_url: item.image_url || "",
-      category: item.category,
       is_available: item.is_available,
       display_order: item.display_order,
     });
@@ -77,7 +75,6 @@ export default function Merchandise() {
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Orden</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Preview</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Categoría</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Disponible</th>
               <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">Acciones</th>
@@ -95,7 +92,6 @@ export default function Merchandise() {
                   )}
                 </td>
                 <td className="px-4 py-3 text-sm font-medium text-gray-900">{m.name}</td>
-                <td className="px-4 py-3 text-sm text-gray-500">{m.category}</td>
                 <td className="px-4 py-3 text-sm text-gray-500">{m.price != null ? `Q${m.price}` : "—"}</td>
                 <td className="px-4 py-3 text-sm">
                   <span className={`inline-block w-2 h-2 rounded-full ${m.is_available ? "bg-green-500" : "bg-gray-300"}`} />
@@ -107,13 +103,13 @@ export default function Merchandise() {
               </tr>
             ))}
             {items.length === 0 && (
-              <tr><td colSpan={7} className="px-4 py-6 text-center text-sm text-gray-400">Sin productos</td></tr>
+              <tr><td colSpan={6} className="px-4 py-6 text-center text-sm text-gray-400">Sin productos</td></tr>
             )}
           </tbody>
         </table>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg border p-6 space-y-4 max-w-2xl">
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg border p-4 sm:p-6 space-y-4 max-w-2xl">
         <h3 className="text-lg font-semibold text-slate-800">
           {editingId ? "Editar producto" : "Nuevo producto"}
         </h3>
@@ -127,12 +123,6 @@ export default function Merchandise() {
           <div>
             <label className="block text-sm font-medium text-gray-700">Slug</label>
             <input type="text" value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} required className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Categoría</label>
-            <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
-              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Precio (Q)</label>
