@@ -12,7 +12,6 @@ const CONTENT_SECTIONS = [
     fields: [
       { key: "quienes_somos_headline", label: "Título de la sección", type: "text", placeholder: "Quiénes Somos" },
       { key: "quienes_somos_description", label: "Descripción (historia y quiénes somos)", type: "textarea", rows: 8, placeholder: "Texto principal sobre la academia..." },
-      { key: "quienes_somos_team_photo_url", label: "URL de foto del equipo (opcional)", type: "text", placeholder: "https://..." },
     ],
   },
   {

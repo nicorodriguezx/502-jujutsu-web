@@ -39,10 +39,11 @@ router.get("/:key", async (req, res) => {
 });
 
 // PUT /api/site-content/:key -- upsert: create if missing, update if exists
+// Allows empty string to clear a value (e.g. removing an image).
 router.put("/:key", async (req, res) => {
   const { content_text } = req.body;
 
-  if (!content_text) {
+  if (content_text === undefined || content_text === null) {
     return res.status(400).json({ error: "content_text is required" });
   }
 

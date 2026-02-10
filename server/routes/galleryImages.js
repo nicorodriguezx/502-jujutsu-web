@@ -43,9 +43,9 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const { url, alt_text, caption, category, display_order, is_active } = req.body;
 
-  if (!url || !alt_text || !category) {
+  if (!url || !alt_text) {
     return res.status(400).json({
-      error: "url, alt_text, and category are required",
+      error: "url and alt_text are required",
     });
   }
 
@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
         url,
         alt_text,
         caption: caption || null,
-        category,
+        category: category || "general",
         display_order: display_order ?? 0,
         is_active: is_active ?? true,
       },

@@ -55,4 +55,14 @@
   .section-badge {
     @apply inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium uppercase tracking-wider;
   }
+
+  /* ── Horizontal scroll container (hide scrollbar) ────────────────── */
+  .scroll-snap-x {
+    @apply flex overflow-x-auto snap-x snap-mandatory;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scroll-snap-x::-webkit-scrollbar {
+    display: none;
+  }
 }

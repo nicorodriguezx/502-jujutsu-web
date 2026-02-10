@@ -154,8 +154,6 @@ export default function HomePage() {
   const [schedule, setSchedule] = useState([]);
   const [merchandise, setMerchandise] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
-  const [heroImages, setHeroImages] = useState([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   /* ── Data fetching ──────────────────────────────────────────────── */
   useEffect(() => {
@@ -164,19 +162,7 @@ export default function HomePage() {
     fetch("/api/public/schedule").then((r) => r.json()).then(setSchedule).catch(console.error);
     fetch("/api/public/merchandise").then((r) => r.json()).then(setMerchandise).catch(console.error);
     fetch("/api/public/testimonials").then((r) => r.json()).then(setTestimonials).catch(console.error);
-    fetch("/api/public/gallery?category=hero").then((r) => r.json()).then(setHeroImages).catch(console.error);
   }, []);
-
-  /* ── Hero image carousel ────────────────────────────────────────── */
-  useEffect(() => {
-    if (heroImages.length <= 1) return;
-    const interval =
-      parseInt(content.hero_image_transition_interval) || 5000;
-    const timer = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-    }, interval);
-    return () => clearInterval(timer);
-  }, [heroImages.length, content.hero_image_transition_interval]);
 
   /* ── Scroll-triggered entrance animations ───────────────────────── */
   useEffect(() => {
@@ -247,23 +233,15 @@ export default function HomePage() {
       >
         {/* Background */}
         <div className="absolute inset-0">
-          {heroImages.length === 0 && (
+          {content.hero_image_url ? (
+            <img
+              src={content.hero_image_url}
+              alt={content.hero_image_alt || ""}
+              className="w-full h-full object-cover"
+            />
+          ) : (
             <div className="absolute inset-0 bg-gradient-to-br from-navy-950 via-navy-800 to-navy-600" />
           )}
-          {heroImages.map((image, index) => (
-            <div
-              key={image.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentImageIndex ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <img
-                src={image.url}
-                alt={image.alt_text}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          ))}
           {/* Dark overlay */}
           <div
             className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"
@@ -272,6 +250,11 @@ export default function HomePage() {
                 parseFloat(content.hero_background_overlay_opacity) || 0.65,
             }}
           />
+        </div>
+
+        {/* Soft dark backdrop behind text for readability */}
+        <div className="absolute inset-0 z-[5] flex items-center justify-center pointer-events-none">
+          <div className="w-[90%] max-w-3xl aspect-[4/3] bg-black/40 rounded-full blur-[120px]" />
         </div>
 
         {/* Content */}
@@ -431,7 +414,7 @@ export default function HomePage() {
               <div className="relative rounded-2xl overflow-hidden shadow-soft-lg group">
                 <img
                   src={content.quienes_somos_team_photo_url}
-                  alt="Equipo 502 Jūjutsu"
+                  alt={content.quienes_somos_team_photo_alt || "Equipo 502 Jūjutsu"}
                   className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
@@ -514,6 +497,12 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Divider: Quiénes Somos → Programas ─────────────────────────── */}
+      <SectionDivider
+        imageUrl={content.divider_quienes_programas_url}
+        altText={content.divider_quienes_programas_alt}
+      />
 
       {/* ============================================================= */}
       {/* PROGRAMAS                                                      */}
@@ -878,13 +867,13 @@ export default function HomePage() {
             </p>
           </div>
 
-          {/* Products */}
+          {/* Products — horizontal swipe on mobile, grid on sm+ */}
           {merchandise.length > 0 ? (
-            <div className="stagger-children grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-14">
+            <div className="animate-on-scroll scroll-snap-x gap-5 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-8 sm:pb-0 sm:overflow-visible sm:snap-none mb-14">
               {merchandise.map((item, index) => (
                 <div
                   key={index}
-                  className="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500"
+                  className="flex-shrink-0 w-[280px] sm:w-auto snap-center group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500"
                 >
                   {item.image_url ? (
                     <div className="aspect-[4/3] bg-gray-50 overflow-hidden">

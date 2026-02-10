@@ -62,11 +62,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **Clean Code Structure** - Organized component styling with consistent patterns
 - **Build Optimization** - Maintained fast build times with enhanced CSS output
 
+### 🎨 **Enhanced Image Management System**
+
+#### **🏗️ Site Image Architecture Refactor**
+- Migrated from category-based gallery images to site-specific images in `site_content`
+- Removed category field from gallery images (all now use "general")
+- Added dedicated site image fields for hero, team photos, and section dividers
+- Replaced hero image carousel with single static image for better performance
+- Added soft dark backdrop behind hero text for improved readability
+
+#### **📱 Mobile & Admin Enhancements**
+- Added horizontal swipe for merchandise catalog on mobile (new `.scroll-snap-x` utility)
+- Redesigned Gallery Images admin page with separate "Site Section Images" and "General Gallery" sections
+- Enhanced image upload with previews, alt text management, and remove functionality
+- Added new section divider between Quienes Somos and Programs
+
 ### 📊 **Files Modified**
 - `client/tailwind.config.js` - Complete design system with custom colors, animations, and shadows
-- `client/src/index.css` - Scroll animations, component utilities, and enhanced base styles
+- `client/src/index.css` - Scroll animations, component utilities, horizontal scroll utilities, and enhanced base styles
 - `client/src/PublicLayout.jsx` - Redesigned header, mobile menu, footer, and floating FAB
-- `client/src/pages/public/HomePage.jsx` - Full page redesign with scroll animations and dark Código 753 section
+- `client/src/pages/public/HomePage.jsx` - Full page redesign with scroll animations, dark Código 753 section, single hero image, and mobile merchandise swipe
+- `client/src/pages/GalleryImages.jsx` - Complete refactor with site images management and general gallery section
+- `client/src/pages/QuienesSomos.jsx` - Streamlined admin form with team photo moved to site images
+- `server/routes/galleryImages.js` - Removed category requirement and validation
+- `server/routes/siteContent.js` - Enhanced to allow empty strings for image removal
 
 ## [0.2.4] - 2026-02-10
 
