@@ -4,6 +4,68 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.5] - 2026-02-10
+
+### ✨ **Added - Major Frontend Redesign with Tailwind CSS & Modern UI/UX**
+
+#### **🎨 Complete Design System Overhaul**
+- **Brand Color Palette** - Replaced hardcoded colors with semantic Tailwind color scales:
+  - Navy: 50-950 scale (`#003366` → `navy-600`, `#0D47A1` → `navy-500`)
+  - Gold: 50-800 scale for featured testimonials (`#D4A017` → `gold-400`)
+- **Custom Animations** - Added scroll-triggered entrance animations:
+  - Fade-in, fade-up, scale-in effects with IntersectionObserver
+  - Staggered children animations for grid layouts
+  - Float and pulse effects for subtle motion
+- **Enhanced Shadows** - Custom shadow utilities:
+  - `shadow-soft`, `shadow-soft-lg`, `shadow-soft-xl` for depth
+  - `shadow-glow-navy`, `shadow-glow-gold` for premium feel
+
+#### **🌐 Redesigned Public Layout & Navigation**
+- **Scroll-Aware Header** - Dynamic header that transitions from transparent to frosted glass
+  - Starts transparent over hero, becomes solid white with backdrop blur on scroll
+  - Adaptive nav link colors (white → gray) and CTA button styles
+- **Enhanced Mobile Menu** - Modern dropdown with smooth animations and body scroll lock
+  - Rounded menu items with hover states and staggered entrance
+  - Clean close button and improved accessibility
+- **Floating WhatsApp Button** - Fixed FAB with scale animation and brand positioning
+- **Premium Dark Footer** - Complete redesign with gradient background and structured layout
+  - 4-column responsive grid with navigation, contact, and CTA sections
+  - Enhanced brand presentation and social links
+
+#### **🏠 Transformed Home Page Experience**
+- **Hero Section Enhancement** - Dramatic typography improvements and staggered animations
+  - Larger headings (up to `text-7xl`), enhanced CTA buttons with hover lift
+  - Smooth carousel transitions and improved overlay controls
+- **Scroll-Triggered Animations** - Every section animates in as you scroll
+  - IntersectionObserver-powered entrance effects throughout the page
+  - Staggered grid animations for programs, testimonials, and merchandise
+- **Dark Código 753 Section** - Complete visual transformation
+  - Dark gradient background (`gray-900` → `navy-950`) for dramatic impact
+  - Glassmorphism cards with glowing number circles and frosted badges
+  - Enhanced spiritual/physical/mental component presentation
+- **Premium Card Designs** - Consistent rounded corners, soft shadows, and hover effects
+  - Program cards with gradient icons and glow effects on hover
+  - Featured testimonials with gold accent rings and star indicators
+  - Enhanced merchandise and contact cards with better spacing
+
+#### **📱 Improved Mobile Experience**
+- **Responsive Typography** - Scalable font sizes from mobile to desktop
+- **Touch-Friendly Interactions** - Larger tap targets and improved spacing
+- **Smooth Transitions** - All interactive elements have polished hover/focus states
+- **Performance Optimized** - Efficient scroll event handling and animation triggers
+
+#### **🛠️ Developer Experience Improvements**
+- **Semantic Color Tokens** - Replaced all magic color values with maintainable design tokens
+- **Reusable Component Classes** - Added `.section-badge` and animation utility classes
+- **Clean Code Structure** - Organized component styling with consistent patterns
+- **Build Optimization** - Maintained fast build times with enhanced CSS output
+
+### 📊 **Files Modified**
+- `client/tailwind.config.js` - Complete design system with custom colors, animations, and shadows
+- `client/src/index.css` - Scroll animations, component utilities, and enhanced base styles
+- `client/src/PublicLayout.jsx` - Redesigned header, mobile menu, footer, and floating FAB
+- `client/src/pages/public/HomePage.jsx` - Full page redesign with scroll animations and dark Código 753 section
+
 ## [0.2.4] - 2026-02-10
 
 ### ✨ **Added - Visual Section Dividers**
