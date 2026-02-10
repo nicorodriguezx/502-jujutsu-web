@@ -32,7 +32,7 @@ function SectionDivider({ imageUrl, altText, overlayText }) {
   if (!imageUrl) return null;
 
   return (
-    <div className="relative h-56 sm:h-72 lg:h-80 overflow-hidden">
+    <div className="relative aspect-video overflow-hidden">
       <img
         src={imageUrl}
         alt={altText || ""}
@@ -308,14 +308,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ================================================================= */}
-      {/* DIVIDER: Hero → Metodología                                      */}
-      {/* ================================================================= */}
-      <SectionDivider
-        imageUrl={content.divider_hero_metodologia_url}
-        altText={content.divider_hero_metodologia_alt}
-      />
 
       {/* ================================================================= */}
       {/* METODOLOGÍA & CÓDIGO 753 SECTION                                 */}

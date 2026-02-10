@@ -8,13 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### ✨ **Added - Visual Section Dividers**
 
-#### **🖼️ Full-Width Image Dividers**
-- Added 4 visual section breaks between major website sections:
-  - Hero → Metodología: Action shot of intense training
+#### **🖼️ 16:9 Image Dividers**
+- Added 3 visual section breaks between major website sections:
   - Metodología → Quiénes Somos: Team/group photo
   - Modalidad → Código 753: Philosophical/meditative training image
   - Horarios → Mercancía: Energy-filled group training scene
-- Responsive design with lazy loading and subtle gradient overlays
+- 16:9 aspect ratio with lazy loading and subtle gradient overlays
 
 #### **⚙️ Admin Management**
 - Added "Divisores entre Secciones" section to Gallery admin page
@@ -22,7 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Individual divider cards with preview and alt text management
 
 #### **🗃️ Database Updates**
-- Added 8 new site_content keys for divider images and alt text
+- Added 6 new site_content keys for divider images and alt text
 - Integrated into Prisma seed for initial setup
 
 ### 📊 **Files Modified**

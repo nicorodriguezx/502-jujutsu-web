@@ -185,8 +185,6 @@ async function main() {
     ["use_parallax_effects", "true"],
 
     // Section Divider Images (visual breakpoints between sections)
-    ["divider_hero_metodologia_url", ""],
-    ["divider_hero_metodologia_alt", "Entrenamiento intenso de Jūjutsu"],
     ["divider_metodologia_quienes_url", ""],
     ["divider_metodologia_quienes_alt", "Equipo 502 Jūjutsu"],
     ["divider_modalidad_filosofia_url", ""],

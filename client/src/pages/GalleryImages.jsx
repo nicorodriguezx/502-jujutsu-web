@@ -10,12 +10,6 @@ const EMPTY = { url: "", alt_text: "", caption: "", category: "training", displa
 
 const DIVIDER_FIELDS = [
   {
-    urlKey: "divider_hero_metodologia_url",
-    altKey: "divider_hero_metodologia_alt",
-    label: "Hero → Metodología",
-    description: "Acción intensa de entrenamiento",
-  },
-  {
     urlKey: "divider_metodologia_quienes_url",
     altKey: "divider_metodologia_quienes_alt",
     label: "Metodología → Quiénes Somos",
