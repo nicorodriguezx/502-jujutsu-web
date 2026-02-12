@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.6] - 2026-02-12
+
+### ✨ **Added - Hero Section Logo & Text Updates**
+
+- **Logo Integration** - Added prominent transparent PNG logo above hero headline
+- **Typography Adjustments** - Reduced headline size for better visual hierarchy with logo
+- **Content Update** - Updated subheadline to "Transforma tu vida con Valente Brothers Jūjutsu"
+
 ## [0.2.5] - 2026-02-10
 
 ### ✨ **Added - Major Frontend Redesign with Tailwind CSS & Modern UI/UX**

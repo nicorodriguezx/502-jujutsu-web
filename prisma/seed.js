@@ -113,7 +113,7 @@ async function main() {
   const siteContentData = [
     // Hero
     ["hero_headline", "Defensa Personal Real con la Metodología Hermanos Valente"],
-    ["hero_subheadline", "Transforma tu vida con Helio Gracie Jūjutsu. Clases para todas las edades en Ciudad de Guatemala."],
+    ["hero_subheadline", "Transforma tu vida con Valente Brothers Jūjutsu. Clases para todas las edades en Ciudad de Guatemala."],
     ["hero_cta_primary", "Contactar"],
     ["hero_cta_secondary", "Ver Horarios"],
     ["hero_background_overlay_opacity", "0.6"],

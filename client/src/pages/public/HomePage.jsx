@@ -259,22 +259,29 @@ export default function HomePage() {
 
         {/* Content */}
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-20">
+          {/* Logo */}
+          <img
+            src="/logo.png"
+            alt="502 Jujutsu"
+            className="w-44 sm:w-56 lg:w-64 mx-auto mb-6 drop-shadow-2xl animate-fade-in"
+          />
+
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-8 animate-fade-in">
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-5 py-2 mb-6 animate-fade-in">
             <span className="text-xs font-semibold text-blue-200 uppercase tracking-widest">
               Helio Gracie Jūjutsu
             </span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.1] tracking-tight animate-fade-in-up">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.1] tracking-tight animate-fade-in-up">
             {content.hero_headline || "502 Jujutsu"}
           </h1>
 
           {/* Subheadline */}
           <p className="mt-6 text-lg sm:text-xl text-blue-100/90 max-w-2xl mx-auto leading-relaxed animate-fade-in-up [animation-delay:150ms]">
             {content.hero_subheadline ||
-              "Clases para niños, jóvenes, mujeres y adultos en Ciudad de Guatemala"}
+              "Transforma tu vida con Valente Brothers Jūjutsu. Clases para todas las edades en Ciudad de Guatemala."}
           </p>
 
           {/* CTA */}

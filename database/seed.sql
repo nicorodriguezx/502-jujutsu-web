@@ -73,7 +73,7 @@ INSERT INTO programs (name, slug, subtitle, description, age_range_min, age_rang
 -- ---------------------------------------------------------------------------
 INSERT INTO site_content (section_key, content_text) VALUES
 ('hero_headline',        '502 Jujutsu - Defensa Personal Real – Metodología Hermanos Valente'),
-('hero_subheadline',     'Clases para niños, jóvenes, mujeres y adultos en Ciudad de Guatemala'),
+('hero_subheadline',     'Transforma tu vida con Valente Brothers Jūjutsu. Clases para todas las edades en Ciudad de Guatemala.'),
 ('hero_cta_primary',     'Contactar'),
 ('hero_cta_secondary',   'Ver Horarios'),
 
