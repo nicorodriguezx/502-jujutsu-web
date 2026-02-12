@@ -594,15 +594,34 @@ export default function HomePage() {
           {/* Cards */}
           <div className="stagger-children grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* Group Classes */}
-            <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500">
-              <div className="bg-gradient-to-r from-navy-600 to-navy-500 px-6 py-6 flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                  <Users className="w-6 h-6 text-white" />
+            <div className="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500">
+              {content.modalidad_grupal_image_url ? (
+                <div className="relative h-48 overflow-hidden bg-gray-100">
+                  <img
+                    src={content.modalidad_grupal_image_url}
+                    alt={content.modalidad_grupal_title || "Clases Grupales"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-0 left-0 px-6 py-4 flex items-center gap-4">
+                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                      <Users className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white">
+                      {content.modalidad_grupal_title || "Clases Grupales"}
+                    </h3>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-white">
-                  {content.modalidad_grupal_title || "Clases Grupales"}
-                </h3>
-              </div>
+              ) : (
+                <div className="bg-gradient-to-r from-navy-600 to-navy-500 px-6 py-6 flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">
+                    {content.modalidad_grupal_title || "Clases Grupales"}
+                  </h3>
+                </div>
+              )}
               <div className="p-6 sm:p-8 space-y-4">
                 {(
                   content.modalidad_grupal_description ||
@@ -618,15 +637,34 @@ export default function HomePage() {
             </div>
 
             {/* Private Classes */}
-            <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500">
-              <div className="bg-gradient-to-r from-navy-600 to-navy-500 px-6 py-6 flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                  <Shield className="w-6 h-6 text-white" />
+            <div className="group bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-soft hover:shadow-soft-lg transition-all duration-500">
+              {content.modalidad_privada_image_url ? (
+                <div className="relative h-48 overflow-hidden bg-gray-100">
+                  <img
+                    src={content.modalidad_privada_image_url}
+                    alt={content.modalidad_privada_title || "Clases Privadas"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-0 left-0 px-6 py-4 flex items-center gap-4">
+                    <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                      <Shield className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold text-white">
+                      {content.modalidad_privada_title || "Clases Privadas"}
+                    </h3>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold text-white">
-                  {content.modalidad_privada_title || "Clases Privadas"}
-                </h3>
-              </div>
+              ) : (
+                <div className="bg-gradient-to-r from-navy-600 to-navy-500 px-6 py-6 flex items-center gap-4">
+                  <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <Shield className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">
+                    {content.modalidad_privada_title || "Clases Privadas"}
+                  </h3>
+                </div>
+              )}
               <div className="p-6 sm:p-8 space-y-4">
                 {(
                   content.modalidad_privada_description ||

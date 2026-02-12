@@ -62,29 +62,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **Clean Code Structure** - Organized component styling with consistent patterns
 - **Build Optimization** - Maintained fast build times with enhanced CSS output
 
-### 🎨 **Enhanced Image Management System**
-
-#### **🏗️ Site Image Architecture Refactor**
-- Migrated from category-based gallery images to site-specific images in `site_content`
-- Removed category field from gallery images (all now use "general")
-- Added dedicated site image fields for hero, team photos, and section dividers
-- Replaced hero image carousel with single static image for better performance
-- Added soft dark backdrop behind hero text for improved readability
-
-#### **📱 Mobile & Admin Enhancements**
-- Added horizontal swipe for merchandise catalog on mobile (new `.scroll-snap-x` utility)
-- Redesigned Gallery Images admin page with separate "Site Section Images" and "General Gallery" sections
-- Enhanced image upload with previews, alt text management, and remove functionality
-- Added new section divider between Quienes Somos and Programs
+#### **🎨 Enhanced Image Management System**
+- **Site Image Architecture** - Migrated from category-based gallery images to site-specific images in `site_content`
+- **Hero Section** - Replaced carousel with single static image for better performance and readability
+- **Admin Gallery Refactor** - Redesigned with separate "Site Section Images" and "General Gallery" sections
 - **Merchandise Simplification** - Removed category field from merchandise system for streamlined management
-- **Mobile-Responsive Admin Layout** - Added collapsible sidebar drawer for mobile admin navigation with keyboard shortcuts (Esc to close)
+- **Mobile Enhancements** - Added horizontal swipe for merchandise catalog and collapsible admin sidebar
 
-#### **🔧 Technical Improvements**
-- Consistent form padding across all admin pages (`p-4 sm:p-6` responsive padding)
-- Removed category filtering from merchandise API endpoints
-- Updated Prisma schema to remove merchandise category field and index
+#### **🖼️ New Image Upload for Modalidad de Entrenamiento Cards**
+- **Admin Panel** - New "Modalidad de Entrenamiento — Imágenes" section with upload interfaces for both training modality cards
+- **File Upload** - Support for image uploads (auto-optimized to WebP) and manual URL entry with live previews
+- **Public Display** - Modalidad cards now show uploaded images with hover effects, matching "Nuestros Programas" card style
 
-### 📊 **Files Modified**
+#### **📁 Files Modified**
 - `client/tailwind.config.js` - Complete design system with custom colors, animations, and shadows
 - `client/src/index.css` - Scroll animations, component utilities, horizontal scroll utilities, and enhanced base styles
 - `client/src/PublicLayout.jsx` - Redesigned header, mobile menu, footer, and floating FAB
